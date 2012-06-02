@@ -1,0 +1,138 @@
+#The configuration file for the commands
+
+# Description of parameters
+# The configuration of a command starts with "---" separator, and is a simple
+# set of parameters in the following form
+#
+# parameter: value
+#  
+# There are two main configuration parameters, which are enough to configure a command:
+# 
+# ---
+# alias: "command_alias"
+# name:  "command_name"
+
+# where "alias" is an internal readonly property defined in the implementation of a command
+# and "name" is a command name which is used in the application and visible to a user.
+#
+# The "active" property is used to include or exclude a command from the application. 
+# It has the same effect as deleting a command configuration from this file and was added for
+# simplicity. By default this property is True.
+#
+# The "group" property is used to set a group name which a command belongs to, by default it is 
+# an empty string.
+#
+# For more information, see the manual.
+#
+
+# Default system commands
+
+# initialization command
+# performs hardware initialization, if defined and initializes settings to their default values
+---
+alias: initialize
+name: init
+active: True
+group: "System"
+
+# status command
+# shows status of a command, device or module
+---
+alias: status
+name: status
+active: True
+group: "System"
+
+# whereis command
+# shows position of a device
+---
+alias: position
+name: whereis
+active: True
+group: "System"
+
+# sleep command
+# pause running macro for the given time in seconds
+---
+alias: sleep
+name: sleep
+active: True
+group: "System"
+
+# get command
+# shows settings of a command, device or module
+---
+alias: get
+name: get
+active: True
+group: "System"
+
+# set command
+# sets setting value
+---
+alias: set
+name: set
+active: True
+group: "System"
+
+# macro command
+# runs macro script
+---
+alias: macro
+name: macro
+active: True
+group: "System"
+
+# Below are special commands, which are deactivated by default.
+# If you need any of them, feel free to activate it. 
+
+# move command
+# if your devices can be moved, use this command to move them 
+---
+alias: move
+name: move
+active: True
+group: "Special"
+
+# moverel command
+# relative movement
+---
+alias: moverel
+name: moverel
+active: False
+group: "Special"
+
+# setpos command
+# sets the current position of a device
+---
+alias: setpos
+name: setpos
+active: False
+group: "Special"
+
+# reference command
+# used for devices with reference point
+---
+alias: reference
+name: reference
+active: True
+group: "Special"
+
+
+# switch command
+# used for devices with two possible positions 0 and 1
+---
+alias: switch
+name: switch
+active: True
+group: "Special"
+
+
+# count command
+# used for counters
+---
+alias: count
+name: count
+active: False
+group: "Special"
+

@@ -1,0 +1,304 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyfrid.modules.system.auth.core.auth &mdash; Pyfrid 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../../../_static/pyramid.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../../../',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../../_static/doctools.js"></script>
+    <link rel="top" title="Pyfrid 0.1.1 documentation" href="../../../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../../../index.html" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="../../../../../../_static/ie6.css" type="text/css" media="screen" charset="utf-8" />
+<![endif]-->
+
+  </head>
+  <body>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../../../index.html">Pyfrid 0.1.1 documentation</a> &raquo;</li>
+          <li><a href="../../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pyfrid.modules.system.auth.core.auth</h1><div class="highlight"><pre>
+<span class="c">#    This file is part of PyFRID.</span>
+<span class="c">#</span>
+<span class="c">#    PyFRID is free software: you can redistribute it and/or modify</span>
+<span class="c">#    it under the terms of the GNU General Public License as published by</span>
+<span class="c">#    the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c">#    (at your option) any later version.</span>
+<span class="c">#</span>
+<span class="c">#    PyFRID is distributed in the hope that it will be useful,</span>
+<span class="c">#    but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c">#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c">#    GNU General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c">#    You should have received a copy of the GNU General Public License</span>
+<span class="c">#    along with PyFRID.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="c">#</span>
+
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">StringType</span><span class="p">,</span> <span class="n">ListType</span><span class="p">,</span> <span class="n">FunctionType</span>
+<span class="kn">from</span> <span class="nn">pyfrid.core.sysmod</span> <span class="kn">import</span> <span class="n">BaseSystemModule</span>
+<span class="kn">from</span> <span class="nn">pyfrid.core.signal</span> <span class="kn">import</span> <span class="n">Signal</span>
+<span class="kn">from</span> <span class="nn">pyfrid.core.descriptor</span> <span class="kn">import</span> <span class="n">use_module</span>
+
+<span class="k">class</span> <span class="nc">AccessError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span> <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">login</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="p">[],</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">organization</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">groups</span><span class="p">:</span> <span class="n">groups</span><span class="o">=</span><span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_login</span><span class="o">=</span><span class="n">login</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_password</span><span class="o">=</span><span class="n">password</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="o">=</span><span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_email</span><span class="o">=</span><span class="n">email</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_organization</span><span class="o">=</span><span class="n">organization</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="o">=</span><span class="n">groups</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_extra</span><span class="o">=</span><span class="n">extra</span>
+                
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">[:]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_login</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">password</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_password</span>
+    
+    <span class="nd">@property</span>    
+    <span class="k">def</span> <span class="nf">extra</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extra</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    
+    <span class="nd">@property</span>    
+    <span class="k">def</span> <span class="nf">email</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_email</span>
+    
+    <span class="nd">@property</span>    
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+    
+    <span class="nd">@property</span>    
+    <span class="k">def</span> <span class="nf">organization</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_organization</span>
+    
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">user</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">user</span><span class="o">!=</span><span class="bp">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">login</span><span class="o">==</span><span class="n">user</span><span class="o">.</span><span class="n">login</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">return</span> <span class="bp">False</span> 
+
+       
+<div class="viewcode-block" id="BaseAuthModule"><a class="viewcode-back" href="../../../../../../sysmod.html#pyfrid.modules.system.auth.core.auth.BaseAuthModule">[docs]</a><span class="k">class</span> <span class="nc">BaseAuthModule</span><span class="p">(</span><span class="n">BaseSystemModule</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This is base class of authentication module. This module has functions for login and logout of a user, validating access of a user to</span>
+<span class="sd">    objects presented in application. It also contains abstract methods for user creation and deleting.</span>
+<span class="sd">    By default the authentication module has several useful signals:</span>
+<span class="sd">    </span>
+<span class="sd">       *  before_login_signal  </span>
+<span class="sd">       *  after_login_signal   </span>
+<span class="sd">       *  before_logout_signal  </span>
+<span class="sd">       *  after_logout_signal</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c">#: user groups and their weights. Groups with smaller are more powerful.</span>
+    <span class="n">groups</span><span class="o">=</span><span class="p">{</span>
+                <span class="s">&quot;ROOT&quot;</span>   <span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+                <span class="s">&quot;ADVUSER&quot;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span>
+                <span class="s">&quot;USER&quot;</span>   <span class="p">:</span><span class="mi">20</span><span class="p">,</span>
+                <span class="s">&quot;GUEST&quot;</span>  <span class="p">:</span><span class="mi">30</span>
+           <span class="p">}</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BaseAuthModule</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_user_stack</span><span class="o">=</span><span class="nb">list</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">before_login_signal</span><span class="o">=</span><span class="n">Signal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">after_login_signal</span><span class="o">=</span><span class="n">Signal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">before_logout_signal</span><span class="o">=</span><span class="n">Signal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">after_logout_signal</span><span class="o">=</span><span class="n">Signal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">after_login_signal</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger_module</span><span class="o">.</span><span class="n">set_current_user</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">after_logout_signal</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger_module</span><span class="o">.</span><span class="n">set_current_user</span><span class="p">)</span>
+    
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="BaseAuthModule.current_user"><a class="viewcode-back" href="../../../../../../sysmod.html#pyfrid.modules.system.auth.core.auth.BaseAuthModule.current_user">[docs]</a>    <span class="k">def</span> <span class="nf">current_user</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a *user* object from top of the stack (i.e. current user) or None if there is no user logged in.&quot;&quot;&quot;</span> 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_user_stack</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_user_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">None</span>
+    </div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="BaseAuthModule.current_login"><a class="viewcode-back" href="../../../../../../sysmod.html#pyfrid.modules.system.auth.core.auth.BaseAuthModule.current_login">[docs]</a>    <span class="k">def</span> <span class="nf">current_login</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns login of a currently logged in user or empty string&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_user_stack</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_user_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">login</span>
+        <span class="k">return</span> <span class="s">&#39;&#39;</span>
+            </div>
+<div class="viewcode-block" id="BaseAuthModule.login"><a class="viewcode-back" href="../../../../../../sysmod.html#pyfrid.modules.system.auth.core.auth.BaseAuthModule.login">[docs]</a>    <span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">login</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function first validates login and password and creates *User* object, which corresponds to them.</span>
+<span class="sd">        If validation was successful and there is no current user in application, this user become the current one.</span>
+<span class="sd">        If there is another user currently signed in and his group weight is smaller (he has more rights), login fails.</span>
+<span class="sd">        If the current user has less rights then one which is trying to login, then new user is added to the top of the</span>
+<span class="sd">        stack and become the current user. This function return true or False depending on the result of the login process.&quot;&quot;&quot;</span> 
+        <span class="n">user</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">validate_user</span><span class="p">(</span><span class="n">login</span><span class="p">,</span><span class="n">password</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">user</span><span class="o">==</span><span class="bp">None</span><span class="p">:</span> <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_user</span><span class="o">==</span><span class="n">user</span><span class="p">:</span> <span class="k">return</span> <span class="bp">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">before_login_signal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_user</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_user</span><span class="o">!=</span><span class="bp">None</span><span class="p">:</span> 
+            <span class="n">curr_role</span><span class="o">=</span><span class="nb">min</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">val</span><span class="p">]</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_user</span><span class="o">.</span><span class="n">groups</span><span class="p">])</span>
+            <span class="n">user_role</span><span class="o">=</span><span class="nb">min</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">val</span><span class="p">]</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">user</span><span class="o">.</span><span class="n">groups</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">user_role</span><span class="o">&gt;=</span><span class="n">curr_role</span><span class="p">:</span> <span class="k">return</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_user_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">after_login_signal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_user</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">True</span>
+    </div>
+<div class="viewcode-block" id="BaseAuthModule.logout"><a class="viewcode-back" href="../../../../../../sysmod.html#pyfrid.modules.system.auth.core.auth.BaseAuthModule.logout">[docs]</a>    <span class="k">def</span> <span class="nf">logout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">login</span><span class="p">,</span><span class="n">password</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Performs a logout of a current user from application after validation of *login* and *password*.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_user</span><span class="o">==</span><span class="bp">None</span><span class="p">:</span> <span class="k">return</span> <span class="bp">True</span>
+        <span class="n">user</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">validate_user</span><span class="p">(</span><span class="n">login</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">user</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span> <span class="k">return</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">before_logout_signal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_user</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_user_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">after_logout_signal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_user</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">True</span>
+    </div>
+<div class="viewcode-block" id="BaseAuthModule.validate_access"><a class="viewcode-back" href="../../../../../../sysmod.html#pyfrid.modules.system.auth.core.auth.BaseAuthModule.validate_access">[docs]</a>    <span class="k">def</span> <span class="nf">validate_access</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">getter</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function checks whether a current user has access to an object. The argument *getter* can be an object</span>
+<span class="sd">        which has method *get_permission_groups* or a function which accepts *permission* as an argument and returns a list</span>
+<span class="sd">        of user groups corresponding to *permission*.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_user</span><span class="o">==</span><span class="bp">None</span><span class="p">:</span> <span class="k">return</span> <span class="bp">False</span>    
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">permission</span><span class="p">)</span><span class="o">==</span><span class="n">StringType</span><span class="p">:</span>
+            <span class="n">groups</span><span class="o">=</span><span class="p">[]</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">getter</span><span class="p">)</span><span class="o">==</span><span class="n">FunctionType</span><span class="p">:</span>
+                <span class="n">groups</span><span class="o">=</span><span class="n">getter</span><span class="p">(</span><span class="n">permission</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">groups</span><span class="o">=</span><span class="n">getter</span><span class="o">.</span><span class="n">get_permission_groups</span><span class="p">(</span><span class="n">permission</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">groups</span><span class="p">:</span> <span class="k">return</span> <span class="bp">True</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">gr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_user</span><span class="o">.</span><span class="n">groups</span> <span class="k">for</span> <span class="n">gr</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">]):</span>
+                <span class="k">return</span> <span class="bp">True</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">permission</span><span class="p">)</span><span class="o">==</span><span class="n">ListType</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">all</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">validate_access</span><span class="p">(</span><span class="n">getter</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">permission</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Wrong permission type. It must be a list of strings or a string&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    </div>
+    <span class="nd">@abc.abstractmethod</span>
+<div class="viewcode-block" id="BaseAuthModule.validate_user"><a class="viewcode-back" href="../../../../../../sysmod.html#pyfrid.modules.system.auth.core.auth.BaseAuthModule.validate_user">[docs]</a>    <span class="k">def</span> <span class="nf">validate_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">login</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Abstract method which checks *login* and *password* and returns a User object which corresponds to them.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">None</span>
+    </div>
+<div class="viewcode-block" id="BaseAuthModule.status"><a class="viewcode-back" href="../../../../../../sysmod.html#pyfrid.modules.system.auth.core.auth.BaseAuthModule.status">[docs]</a>    <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Status handler with some information about a current user.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">((</span><span class="s">&quot;User&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">current_user</span><span class="o">.</span><span class="n">login</span><span class="p">,</span><span class="s">&quot;&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&quot;Name&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">current_user</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="s">&quot;&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&quot;Organization&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">current_user</span><span class="o">.</span><span class="n">organization</span><span class="p">,</span><span class="s">&quot;&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&quot;Email&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">current_user</span><span class="o">.</span><span class="n">email</span><span class="p">,</span><span class="s">&quot;&quot;</span><span class="p">),)</span>
+    </div>
+    <span class="nd">@abc.abstractmethod</span>
+<div class="viewcode-block" id="BaseAuthModule.add_user"><a class="viewcode-back" href="../../../../../../sysmod.html#pyfrid.modules.system.auth.core.auth.BaseAuthModule.add_user">[docs]</a>    <span class="k">def</span> <span class="nf">add_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">login</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">email</span><span class="p">,</span> <span class="n">organization</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Abstract method which adds user. The information about users is kept</span>
+<span class="sd">        in a different way depending on the type of authentication module.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+    </div>
+    <span class="nd">@abc.abstractmethod</span>
+<div class="viewcode-block" id="BaseAuthModule.del_user"><a class="viewcode-back" href="../../../../../../sysmod.html#pyfrid.modules.system.auth.core.auth.BaseAuthModule.del_user">[docs]</a>    <span class="k">def</span> <span class="nf">del_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">login</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Abstract method which deletes user.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+    </div>
+    <span class="nd">@abc.abstractmethod</span>
+<div class="viewcode-block" id="BaseAuthModule.user_exists"><a class="viewcode-back" href="../../../../../../sysmod.html#pyfrid.modules.system.auth.core.auth.BaseAuthModule.user_exists">[docs]</a>    <span class="k">def</span> <span class="nf">user_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">login</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns True if user with login *login* exists or False.&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+    </div>
+    <span class="nd">@abc.abstractproperty</span>
+<div class="viewcode-block" id="BaseAuthModule.noauth"><a class="viewcode-back" href="../../../../../../sysmod.html#pyfrid.modules.system.auth.core.auth.BaseAuthModule.noauth">[docs]</a>    <span class="k">def</span> <span class="nf">noauth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns True if authentication module doesn&#39;t perform any login or logout.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    
+    </div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../../../index.html">Pyfrid 0.1.1 documentation</a> &raquo;</li>
+          <li><a href="../../../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Denis Korolkov.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

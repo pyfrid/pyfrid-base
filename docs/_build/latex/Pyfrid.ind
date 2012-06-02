@@ -1,0 +1,222 @@
+\begin{theindex}
+\def\bigletter#1{{\Large\sffamily#1}\nopagebreak\vspace{1mm}}
+
+  \bigletter A
+  \item add\_user() (pyfrid.modules.system.auth.core.auth.BaseAuthModule method), \hyperpage{18}
+  \item add\_user() (pyfrid.modules.system.auth.noauth.BaseNoAuthModule method), \hyperpage{19}
+  \item app (pyfrid.core.command.BaseCommand attribute), \hyperpage{7}
+  \item app (pyfrid.core.command.BaseThreadedCommand attribute), \hyperpage{8}
+
+  \indexspace
+  \bigletter B
+  \item BaseApplicationModule (class in pyfrid.modules.system.app), \hyperpage{15}
+  \item BaseAuthModule (class in pyfrid.modules.system.auth.core.auth), \hyperpage{18}
+  \item BaseCommand (class in pyfrid.core.command), \hyperpage{7}
+  \item BaseLeplVMModule (class in pyfrid.modules.system.vm.leplvm), \hyperpage{18}
+  \item BaseLoggerModule (class in pyfrid.modules.system.logger), \hyperpage{20}
+  \item BaseNoAuthModule (class in pyfrid.modules.system.auth.noauth), \hyperpage{19}
+  \item BaseNode (class in pyfrid.modules.system.vm.leplvm), \hyperpage{18}
+  \item BaseThreadedCommand (class in pyfrid.core.command), \hyperpage{8}
+  \item BaseVMModule (class in pyfrid.modules.system.vm.core.vm), \hyperpage{17}
+  \item BaseYamlAuthModule (class in pyfrid.modules.system.auth.yamlauth), \hyperpage{20}
+  \item busy (pyfrid.core.command.BaseCommand attribute), \hyperpage{7}
+  \item busy (pyfrid.core.command.BaseThreadedCommand attribute), \hyperpage{8}
+  \item busy (pyfrid.modules.system.app.BaseApplicationModule attribute), \hyperpage{15}
+  \item busy (pyfrid.modules.system.vm.core.vm.BaseVMModule attribute), \hyperpage{17}
+
+  \indexspace
+  \bigletter C
+  \item can() (pyfrid.core.command.BaseCommand method), \hyperpage{7}
+  \item can() (pyfrid.core.command.BaseThreadedCommand method), \hyperpage{9}
+  \item CmdStmtNode (class in pyfrid.modules.system.vm.leplvm), \hyperpage{18}
+  \item commands() (pyfrid.modules.system.app.BaseApplicationModule method), \hyperpage{15}
+  \item completions() (pyfrid.core.command.BaseCommand method), \hyperpage{7}
+  \item current\_line (pyfrid.modules.system.vm.core.vm.BaseVMModule attribute), \hyperpage{17}
+  \item current\_login (pyfrid.modules.system.auth.core.auth.BaseAuthModule attribute), 
+		\hyperpage{19}
+  \item current\_macro (pyfrid.modules.system.vm.core.vm.BaseVMModule attribute), \hyperpage{17}
+  \item current\_user (pyfrid.modules.system.auth.core.auth.BaseAuthModule attribute), 
+		\hyperpage{19}
+
+  \indexspace
+  \bigletter D
+  \item dbpath (pyfrid.modules.system.auth.yamlauth.BaseYamlAuthModule attribute), \hyperpage{20}
+  \item debug() (pyfrid.core.command.BaseCommand method), \hyperpage{7}
+  \item debug() (pyfrid.core.command.BaseThreadedCommand method), \hyperpage{9}
+  \item debugmode (pyfrid.modules.system.logger.BaseLoggerModule attribute), \hyperpage{20}
+  \item del\_user() (pyfrid.modules.system.auth.core.auth.BaseAuthModule method), \hyperpage{19}
+  \item del\_user() (pyfrid.modules.system.auth.noauth.BaseNoAuthModule method), \hyperpage{19}
+  \item devices() (pyfrid.modules.system.app.BaseApplicationModule method), \hyperpage{15}
+
+  \indexspace
+  \bigletter E
+  \item elapsed (pyfrid.modules.system.vm.core.vm.BaseVMModule attribute), \hyperpage{17}
+  \item email\_log (pyfrid.modules.system.logger.BaseLoggerModule attribute), \hyperpage{20}
+  \item err\_stop (pyfrid.modules.system.vm.core.vm.BaseVMModule attribute), \hyperpage{17}
+  \item error() (pyfrid.core.command.BaseCommand method), \hyperpage{7}
+  \item error() (pyfrid.core.command.BaseThreadedCommand method), \hyperpage{9}
+  \item exc\_stop (pyfrid.modules.system.vm.core.vm.BaseVMModule attribute), \hyperpage{17}
+  \item exception() (pyfrid.core.command.BaseCommand method), \hyperpage{7}
+  \item exception() (pyfrid.core.command.BaseThreadedCommand method), \hyperpage{9}
+  \item execute() (pyfrid.core.command.BaseCommand method), \hyperpage{7}
+  \item execute\_ast() (pyfrid.modules.system.vm.core.vm.BaseVMModule method), \hyperpage{17}
+  \item execute\_code() (pyfrid.modules.system.app.BaseApplicationModule method), \hyperpage{15}
+  \item execute\_code() (pyfrid.modules.system.vm.core.vm.BaseVMModule method), \hyperpage{17}
+
+  \indexspace
+  \bigletter F
+  \item file\_log (pyfrid.modules.system.logger.BaseLoggerModule attribute), \hyperpage{20}
+  \item finishes (pyfrid.modules.system.vm.core.vm.BaseVMModule attribute), \hyperpage{17}
+
+  \indexspace
+  \bigletter G
+  \item get\_command() (pyfrid.modules.system.app.BaseApplicationModule method), \hyperpage{16}
+  \item get\_device() (pyfrid.modules.system.app.BaseApplicationModule method), \hyperpage{16}
+  \item get\_module() (pyfrid.modules.system.app.BaseApplicationModule method), \hyperpage{16}
+  \item get\_permission\_groups() (pyfrid.core.command.BaseCommand method), \hyperpage{7}
+  \item get\_permission\_groups() (pyfrid.core.command.BaseThreadedCommand method), \hyperpage{9}
+  \item grammar() (pyfrid.core.command.BaseCommand method), \hyperpage{7}
+  \item groups (pyfrid.modules.system.auth.core.auth.BaseAuthModule attribute), \hyperpage{19}
+
+  \indexspace
+  \bigletter H
+  \item has\_error (pyfrid.core.command.BaseCommand attribute), \hyperpage{7}
+  \item has\_error (pyfrid.core.command.BaseThreadedCommand attribute), \hyperpage{9}
+  \item has\_exception (pyfrid.core.command.BaseCommand attribute), \hyperpage{7}
+  \item has\_exception (pyfrid.core.command.BaseThreadedCommand attribute), \hyperpage{9}
+  \item has\_info (pyfrid.core.command.BaseCommand attribute), \hyperpage{7}
+  \item has\_info (pyfrid.core.command.BaseThreadedCommand attribute), \hyperpage{9}
+  \item has\_warning (pyfrid.core.command.BaseCommand attribute), \hyperpage{8}
+  \item has\_warning (pyfrid.core.command.BaseThreadedCommand attribute), \hyperpage{9}
+
+  \indexspace
+  \bigletter I
+  \item info() (pyfrid.core.command.BaseCommand method), \hyperpage{8}
+  \item info() (pyfrid.core.command.BaseThreadedCommand method), \hyperpage{9}
+  \item initialize() (pyfrid.core.command.BaseCommand method), \hyperpage{8}
+  \item initialize() (pyfrid.core.command.BaseThreadedCommand method), \hyperpage{9}
+  \item initialize() (pyfrid.modules.system.app.BaseApplicationModule method), \hyperpage{16}
+  \item iterate\_commands() (pyfrid.modules.system.app.BaseApplicationModule method), 
+		\hyperpage{16}
+  \item iterate\_devices() (pyfrid.modules.system.app.BaseApplicationModule method), \hyperpage{16}
+  \item iterate\_modules() (pyfrid.modules.system.app.BaseApplicationModule method), \hyperpage{16}
+  \item iterate\_objects() (pyfrid.modules.system.app.BaseApplicationModule method), \hyperpage{16}
+  \item iterate\_settings() (pyfrid.core.command.BaseCommand method), \hyperpage{8}
+  \item iterate\_settings() (pyfrid.core.command.BaseThreadedCommand method), \hyperpage{9}
+  \item iterate\_sysmods() (pyfrid.modules.system.app.BaseApplicationModule method), \hyperpage{16}
+
+  \indexspace
+  \bigletter L
+  \item lock() (pyfrid.core.command.BaseCommand method), \hyperpage{8}
+  \item lock() (pyfrid.core.command.BaseThreadedCommand method), \hyperpage{9}
+  \item locked (pyfrid.core.command.BaseCommand attribute), \hyperpage{8}
+  \item locked (pyfrid.core.command.BaseThreadedCommand attribute), \hyperpage{9}
+  \item logdir (pyfrid.modules.system.logger.BaseLoggerModule attribute), \hyperpage{20}
+  \item login() (pyfrid.modules.system.app.BaseApplicationModule method), \hyperpage{16}
+  \item login() (pyfrid.modules.system.auth.core.auth.BaseAuthModule method), \hyperpage{19}
+  \item logout() (pyfrid.modules.system.app.BaseApplicationModule method), \hyperpage{16}
+  \item logout() (pyfrid.modules.system.auth.core.auth.BaseAuthModule method), \hyperpage{19}
+
+  \indexspace
+  \bigletter M
+  \item modules() (pyfrid.modules.system.app.BaseApplicationModule method), \hyperpage{16}
+
+  \indexspace
+  \bigletter N
+  \item noauth (pyfrid.modules.system.auth.core.auth.BaseAuthModule attribute), \hyperpage{19}
+  \item noauth (pyfrid.modules.system.auth.noauth.BaseNoAuthModule attribute), \hyperpage{19}
+  \item numthreads (pyfrid.core.command.BaseThreadedCommand attribute), \hyperpage{9}
+
+  \indexspace
+  \bigletter O
+  \item objects() (pyfrid.modules.system.app.BaseApplicationModule method), \hyperpage{16}
+
+  \indexspace
+  \bigletter P
+  \item parse\_code() (pyfrid.modules.system.vm.core.vm.BaseVMModule method), \hyperpage{17}
+  \item process() (pyfrid.modules.system.vm.leplvm.BaseNode method), \hyperpage{18}
+  \item projname (pyfrid.modules.system.app.BaseApplicationModule attribute), \hyperpage{16}
+  \item projpath (pyfrid.modules.system.app.BaseApplicationModule attribute), \hyperpage{16}
+  \item pyfrid.core.command (module), \hyperpage{7}
+  \item pyfrid.core.device (module), \hyperpage{11}
+  \item pyfrid.core.module (module), \hyperpage{13}
+  \item pyfrid.core.sysmod (module), \hyperpage{15}
+  \item pyfrid.modules.system.app (module), \hyperpage{15}
+  \item pyfrid.modules.system.auth.core.auth (module), \hyperpage{18}
+  \item pyfrid.modules.system.auth.noauth (module), \hyperpage{19}
+  \item pyfrid.modules.system.auth.yamlauth (module), \hyperpage{20}
+  \item pyfrid.modules.system.logger (module), \hyperpage{20}
+  \item pyfrid.modules.system.vm.core.vm (module), \hyperpage{17}
+  \item pyfrid.modules.system.vm.leplvm (module), \hyperpage{18}
+
+  \indexspace
+  \bigletter R
+  \item release() (pyfrid.core.command.BaseCommand method), \hyperpage{8}
+  \item release() (pyfrid.core.command.BaseThreadedCommand method), \hyperpage{9}
+  \item release() (pyfrid.modules.system.app.BaseApplicationModule method), \hyperpage{16}
+  \item runtime (pyfrid.modules.system.vm.core.vm.BaseVMModule attribute), \hyperpage{18}
+  \item runtime() (pyfrid.core.command.BaseCommand method), \hyperpage{8}
+
+  \indexspace
+  \bigletter S
+  \item settings() (pyfrid.core.command.BaseCommand method), \hyperpage{8}
+  \item settings() (pyfrid.core.command.BaseThreadedCommand method), \hyperpage{9}
+  \item shutdown() (pyfrid.core.command.BaseCommand method), \hyperpage{8}
+  \item shutdown() (pyfrid.core.command.BaseThreadedCommand method), \hyperpage{9}
+  \item shutdown() (pyfrid.modules.system.app.BaseApplicationModule method), \hyperpage{16}
+  \item smtp\_from (pyfrid.modules.system.logger.BaseLoggerModule attribute), \hyperpage{20}
+  \item smtp\_host (pyfrid.modules.system.logger.BaseLoggerModule attribute), \hyperpage{20}
+  \item smtp\_pass (pyfrid.modules.system.logger.BaseLoggerModule attribute), \hyperpage{20}
+  \item smtp\_port (pyfrid.modules.system.logger.BaseLoggerModule attribute), \hyperpage{20}
+  \item smtp\_secure (pyfrid.modules.system.logger.BaseLoggerModule attribute), \hyperpage{20}
+  \item smtp\_user (pyfrid.modules.system.logger.BaseLoggerModule attribute), \hyperpage{20}
+  \item started (pyfrid.modules.system.vm.core.vm.BaseVMModule attribute), \hyperpage{18}
+  \item status() (pyfrid.core.command.BaseCommand method), \hyperpage{8}
+  \item status() (pyfrid.core.command.BaseThreadedCommand method), \hyperpage{9}
+  \item status() (pyfrid.modules.system.app.BaseApplicationModule method), \hyperpage{17}
+  \item status() (pyfrid.modules.system.auth.core.auth.BaseAuthModule method), \hyperpage{19}
+  \item status() (pyfrid.modules.system.vm.core.vm.BaseVMModule method), \hyperpage{18}
+  \item stdout\_log (pyfrid.modules.system.logger.BaseLoggerModule attribute), \hyperpage{20}
+  \item stop() (pyfrid.core.command.BaseCommand method), \hyperpage{8}
+  \item stop() (pyfrid.core.command.BaseThreadedCommand method), \hyperpage{9}
+  \item stop() (pyfrid.modules.system.app.BaseApplicationModule method), \hyperpage{17}
+  \item stopped (pyfrid.core.command.BaseCommand attribute), \hyperpage{8}
+  \item stopped (pyfrid.core.command.BaseThreadedCommand attribute), \hyperpage{9}
+  \item sysmods() (pyfrid.modules.system.app.BaseApplicationModule method), \hyperpage{17}
+
+  \indexspace
+  \bigletter T
+  \item type\_ (pyfrid.modules.system.vm.leplvm.ValueNode attribute), \hyperpage{18}
+
+  \indexspace
+  \bigletter U
+  \item unlock() (pyfrid.core.command.BaseCommand method), \hyperpage{8}
+  \item unlock() (pyfrid.core.command.BaseThreadedCommand method), \hyperpage{9}
+  \item user\_exists() (pyfrid.modules.system.auth.core.auth.BaseAuthModule method), \hyperpage{19}
+  \item user\_exists() (pyfrid.modules.system.auth.noauth.BaseNoAuthModule method), \hyperpage{19}
+
+  \indexspace
+  \bigletter V
+  \item validate() (pyfrid.core.command.BaseCommand method), \hyperpage{8}
+  \item validate\_access() (pyfrid.modules.system.app.BaseApplicationModule method), \hyperpage{17}
+  \item validate\_access() (pyfrid.modules.system.auth.core.auth.BaseAuthModule method), 
+		\hyperpage{19}
+  \item validate\_access() (pyfrid.modules.system.auth.noauth.BaseNoAuthModule method), 
+		\hyperpage{20}
+  \item validate\_ast() (pyfrid.modules.system.vm.core.vm.BaseVMModule method), \hyperpage{18}
+  \item validate\_code() (pyfrid.modules.system.app.BaseApplicationModule method), \hyperpage{17}
+  \item validate\_code() (pyfrid.modules.system.vm.core.vm.BaseVMModule method), \hyperpage{18}
+  \item validate\_setting() (pyfrid.core.command.BaseCommand method), \hyperpage{8}
+  \item validate\_setting() (pyfrid.core.command.BaseThreadedCommand method), \hyperpage{10}
+  \item validate\_user() (pyfrid.modules.system.auth.core.auth.BaseAuthModule method), 
+		\hyperpage{19}
+  \item validate\_user() (pyfrid.modules.system.auth.noauth.BaseNoAuthModule method), 
+		\hyperpage{20}
+  \item ValueNode (class in pyfrid.modules.system.vm.leplvm), \hyperpage{18}
+
+  \indexspace
+  \bigletter W
+  \item warning() (pyfrid.core.command.BaseCommand method), \hyperpage{8}
+  \item warning() (pyfrid.core.command.BaseThreadedCommand method), \hyperpage{10}
+
+\end{theindex}

@@ -1,0 +1,406 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyfrid.modules.system.app &mdash; Pyfrid 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/pyramid.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="Pyfrid 0.1.1 documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="../../../../_static/ie6.css" type="text/css" media="screen" charset="utf-8" />
+<![endif]-->
+
+  </head>
+  <body>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">Pyfrid 0.1.1 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pyfrid.modules.system.app</h1><div class="highlight"><pre>
+<span class="c">#    This file is part of PyFRID.</span>
+<span class="c">#</span>
+<span class="c">#    PyFRID is free software: you can redistribute it and/or modify</span>
+<span class="c">#    it under the terms of the GNU General Public License as published by</span>
+<span class="c">#    the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c">#    (at your option) any later version.</span>
+<span class="c">#</span>
+<span class="c">#    PyFRID is distributed in the hope that it will be useful,</span>
+<span class="c">#    but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c">#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c">#    GNU General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c">#    You should have received a copy of the GNU General Public License</span>
+<span class="c">#    along with PyFRID.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="c">#</span>
+
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">from</span> <span class="nn">pyfrid.core.settings</span> <span class="kn">import</span> <span class="n">StringSetting</span>
+<span class="kn">from</span> <span class="nn">pyfrid.utils.threadpool</span> <span class="kn">import</span> <span class="n">ThreadPool</span>
+<span class="kn">from</span> <span class="nn">pyfrid.core.sysmod</span> <span class="kn">import</span> <span class="n">BaseSystemModule</span>
+<span class="kn">from</span> <span class="nn">pyfrid.core.descriptor</span> <span class="kn">import</span> <span class="n">use_module</span>
+<span class="kn">from</span> <span class="nn">pyfrid.core.device</span> <span class="kn">import</span> <span class="n">device_registry</span>
+<span class="kn">from</span> <span class="nn">pyfrid.core.command</span> <span class="kn">import</span> <span class="n">command_registry</span>
+<span class="kn">from</span> <span class="nn">pyfrid.core.module</span> <span class="kn">import</span> <span class="n">module_registry</span>
+<span class="kn">from</span> <span class="nn">pyfrid.core.command</span> <span class="kn">import</span> <span class="n">get_completions</span>
+
+<span class="k">def</span> <span class="nf">connect_to_logger</span><span class="p">(</span><span class="n">logger_module</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+    <span class="n">obj</span><span class="o">.</span><span class="n">debug_signal</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">logger_module</span><span class="o">.</span><span class="n">debug_slot</span><span class="p">)</span>
+    <span class="n">obj</span><span class="o">.</span><span class="n">info_signal</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">logger_module</span><span class="o">.</span><span class="n">info_slot</span><span class="p">)</span>
+    <span class="n">obj</span><span class="o">.</span><span class="n">warning_signal</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">logger_module</span><span class="o">.</span><span class="n">warning_slot</span><span class="p">)</span>
+    <span class="n">obj</span><span class="o">.</span><span class="n">error_signal</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">logger_module</span><span class="o">.</span><span class="n">error_slot</span><span class="p">)</span>
+    <span class="n">obj</span><span class="o">.</span><span class="n">exception_signal</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">logger_module</span><span class="o">.</span><span class="n">exception_slot</span><span class="p">)</span>
+       
+<div class="viewcode-block" id="BaseApplicationModule"><a class="viewcode-back" href="../../../../sysmod.html#pyfrid.modules.system.app.BaseApplicationModule">[docs]</a><span class="k">class</span> <span class="nc">BaseApplicationModule</span><span class="p">(</span><span class="n">BaseSystemModule</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This is base class for application module. The application module is a system module which</span>
+<span class="sd">    manages devices, commands and modules of your application, executes and validates the code by</span>
+<span class="sd">    using *virtual_machine* system module, control permissions to objects using *authentication* module.</span>
+<span class="sd">    It also has useful tools for developers to iterate over objects of different types.  </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">auth_module</span><span class="o">=</span><span class="n">use_module</span><span class="p">(</span><span class="s">&quot;authentication&quot;</span><span class="p">)</span>
+    <span class="n">vm_module</span><span class="o">=</span><span class="n">use_module</span><span class="p">(</span><span class="s">&quot;virtual_machine&quot;</span><span class="p">)</span>
+
+    <span class="n">instrument</span>  <span class="o">=</span> <span class="n">StringSetting</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">fixed</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">responsible</span> <span class="o">=</span> <span class="n">StringSetting</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">fixed</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">email</span>       <span class="o">=</span> <span class="n">StringSetting</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">fixed</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes application module, creates devices, modules and commands of application and connects</span>
+<span class="sd">        their logging signals to the proper slots of the *logger* module </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BaseApplicationModule</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_execpool</span><span class="o">=</span><span class="n">ThreadPool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_threads</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">persist</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">queue_size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stoppool</span><span class="o">=</span><span class="n">ThreadPool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_threads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">persist</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">queue_size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">alias</span><span class="p">,</span> <span class="n">permissions</span><span class="p">,</span> <span class="n">settings</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">config_manager</span><span class="o">.</span><span class="n">iterate_devices</span><span class="p">():</span>
+            <span class="n">obj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">device_manager</span><span class="o">.</span><span class="n">create_object</span><span class="p">(</span><span class="n">device_registry</span><span class="p">[</span><span class="n">alias</span><span class="p">],</span> <span class="bp">self</span><span class="p">,</span> <span class="n">permissions</span><span class="p">,</span> <span class="n">settings</span><span class="p">)</span>
+            <span class="n">connect_to_logger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger_module</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">alias</span><span class="p">,</span> <span class="n">permissions</span><span class="p">,</span> <span class="n">settings</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">config_manager</span><span class="o">.</span><span class="n">iterate_modules</span><span class="p">():</span>
+            <span class="n">obj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">module_manager</span><span class="o">.</span><span class="n">create_object</span><span class="p">(</span><span class="n">module_registry</span><span class="p">[</span><span class="n">alias</span><span class="p">],</span> <span class="bp">self</span><span class="p">,</span> <span class="n">permissions</span><span class="p">,</span> <span class="n">settings</span><span class="p">)</span>
+            <span class="n">connect_to_logger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger_module</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">alias</span><span class="p">,</span> <span class="n">permissions</span><span class="p">,</span> <span class="n">settings</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">config_manager</span><span class="o">.</span><span class="n">iterate_commands</span><span class="p">():</span>
+            <span class="n">obj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">command_manager</span><span class="o">.</span><span class="n">create_object</span><span class="p">(</span><span class="n">command_registry</span><span class="p">[</span><span class="n">alias</span><span class="p">],</span> <span class="bp">self</span><span class="p">,</span> <span class="n">permissions</span><span class="p">,</span> <span class="n">settings</span><span class="p">)</span>
+            <span class="n">connect_to_logger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger_module</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+                
+                      
+<div class="viewcode-block" id="BaseApplicationModule.initialize"><a class="viewcode-back" href="../../../../sysmod.html#pyfrid.modules.system.app.BaseApplicationModule.initialize">[docs]</a>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialization handler. It iterates over all devices, modules and commands and calls *initialize* handler of each object.&quot;&quot;&quot;</span> 
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterate_devices</span><span class="p">():</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">call_initialize</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span><span class="n">obj</span>  <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterate_modules</span><span class="p">():</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">call_initialize</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterate_commands</span><span class="p">():</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">call_initialize</span><span class="p">()</span>
+        </div>
+<div class="viewcode-block" id="BaseApplicationModule.shutdown"><a class="viewcode-back" href="../../../../sysmod.html#pyfrid.modules.system.app.BaseApplicationModule.shutdown">[docs]</a>    <span class="k">def</span> <span class="nf">shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Shutdown handler. It iterates over all devices, modules and commands and calls *shutdown* handler of each object.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterate_commands</span><span class="p">():</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">call_shutdown</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">obj</span>  <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterate_modules</span><span class="p">():</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">call_shutdown</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterate_devices</span><span class="p">():</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">call_shutdown</span><span class="p">()</span>
+            </div>
+<div class="viewcode-block" id="BaseApplicationModule.stop"><a class="viewcode-back" href="../../../../sysmod.html#pyfrid.modules.system.app.BaseApplicationModule.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Shutdown handler. It iterates over all devices, modules and commands and calls *stop* handler of each object.</span>
+<span class="sd">        Stopping is performed in another thread in order to avoid any blocking of the main thread of application.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+            <span class="n">app</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Stop all objects...&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vm_module</span><span class="o">.</span><span class="n">call_stop</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span><span class="n">obj</span> <span class="ow">in</span> <span class="n">app</span><span class="o">.</span><span class="n">iterate_commands</span><span class="p">():</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">call_stop</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span><span class="n">obj</span> <span class="ow">in</span> <span class="n">app</span><span class="o">.</span><span class="n">iterate_modules</span><span class="p">():</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">call_stop</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span><span class="n">obj</span> <span class="ow">in</span> <span class="n">app</span><span class="o">.</span><span class="n">iterate_devices</span><span class="p">():</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">call_stop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_execpool</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>  
+</div>
+<div class="viewcode-block" id="BaseApplicationModule.release"><a class="viewcode-back" href="../../../../sysmod.html#pyfrid.modules.system.app.BaseApplicationModule.release">[docs]</a>    <span class="k">def</span> <span class="nf">release</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Release handler. It iterates over all devices, modules and commands and calls *release* handler of each object.</span>
+<span class="sd">        This handler is executed before running a command or a code.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterate_commands</span><span class="p">():</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">call_release</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span><span class="n">obj</span>  <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterate_modules</span><span class="p">():</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">call_release</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterate_devices</span><span class="p">():</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">call_release</span><span class="p">()</span>
+            </div>
+<div class="viewcode-block" id="BaseApplicationModule.login"><a class="viewcode-back" href="../../../../sysmod.html#pyfrid.modules.system.app.BaseApplicationModule.login">[docs]</a>    <span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">login</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calls function of the same name of *authentication* module.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth_module</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">login</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="BaseApplicationModule.logout"><a class="viewcode-back" href="../../../../sysmod.html#pyfrid.modules.system.app.BaseApplicationModule.logout">[docs]</a>    <span class="k">def</span> <span class="nf">logout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">login</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calls function of the same name of *authentication* module.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth_module</span><span class="o">.</span><span class="n">logout</span><span class="p">(</span><span class="n">login</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="BaseApplicationModule.execute_code"><a class="viewcode-back" href="../../../../sysmod.html#pyfrid.modules.system.app.BaseApplicationModule.execute_code">[docs]</a>    <span class="k">def</span> <span class="nf">execute_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Executes a code in another thread. Before execution every system module including *application* module is released.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">busy</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&quot;Can not execute command. Virtual machine is busy...&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">code</span><span class="p">:</span>
+            <span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
+                <span class="n">app</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Executing command: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">code</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">app</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">system_manager</span><span class="o">.</span><span class="n">iterate_objects</span><span class="p">():</span>
+                    <span class="n">obj</span><span class="o">.</span><span class="n">call_release</span><span class="p">()</span>
+                <span class="n">app</span><span class="o">.</span><span class="n">vm_module</span><span class="o">.</span><span class="n">execute_code</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_execpool</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">)</span>
+        </div>
+<div class="viewcode-block" id="BaseApplicationModule.validate_code"><a class="viewcode-back" href="../../../../sysmod.html#pyfrid.modules.system.app.BaseApplicationModule.validate_code">[docs]</a>    <span class="k">def</span> <span class="nf">validate_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Validates a code in another thread.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">busy</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&quot;Can not validate command. Virtual machine is busy...&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">code</span><span class="p">:</span>
+            <span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
+                <span class="n">app</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Validating command: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">code</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">app</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">system_manager</span><span class="o">.</span><span class="n">iterate_objects</span><span class="p">():</span>
+                    <span class="n">obj</span><span class="o">.</span><span class="n">call_release</span><span class="p">()</span>
+                <span class="n">app</span><span class="o">.</span><span class="n">vm_module</span><span class="o">.</span><span class="n">validate_code</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_execpool</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">)</span>
+    </div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="BaseApplicationModule.busy"><a class="viewcode-back" href="../../../../sysmod.html#pyfrid.modules.system.app.BaseApplicationModule.busy">[docs]</a>    <span class="k">def</span> <span class="nf">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calls property of the same name of *virtual_machine* module.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vm_module</span><span class="o">.</span><span class="n">busy</span>
+    </div>
+<div class="viewcode-block" id="BaseApplicationModule.validate_access"><a class="viewcode-back" href="../../../../sysmod.html#pyfrid.modules.system.app.BaseApplicationModule.validate_access">[docs]</a>    <span class="k">def</span> <span class="nf">validate_access</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">permission</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Validates access to an object by checking object&#39;s permission.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth_module</span><span class="o">.</span><span class="n">validate_access</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">permission</span><span class="p">)</span>
+        </div>
+<div class="viewcode-block" id="BaseApplicationModule.iterate_devices"><a class="viewcode-back" href="../../../../sysmod.html#pyfrid.modules.system.app.BaseApplicationModule.iterate_devices">[docs]</a>    <span class="k">def</span> <span class="nf">iterate_devices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">byname</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Iterator over devices in application. It yields a tuple *(name, reference)* for every device</span>
+<span class="sd">        depending on permissions (if given). If argument *byname* is False this iterator will return device *alias*.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">device_manager</span><span class="o">.</span><span class="n">iterate_objects</span><span class="p">(</span><span class="n">byname</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">permission</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_access</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">permission</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="k">yield</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+            </div>
+<div class="viewcode-block" id="BaseApplicationModule.iterate_commands"><a class="viewcode-back" href="../../../../sysmod.html#pyfrid.modules.system.app.BaseApplicationModule.iterate_commands">[docs]</a>    <span class="k">def</span> <span class="nf">iterate_commands</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">byname</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Iterator over commands in application. It yields a tuple *(name, reference)* for every command</span>
+<span class="sd">        depending on permissions (if given). If argument *byname* is False this iterator will return command *alias*.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">command_manager</span><span class="o">.</span><span class="n">iterate_objects</span><span class="p">(</span><span class="n">byname</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">permission</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_access</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">permission</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="k">yield</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+                </div>
+<div class="viewcode-block" id="BaseApplicationModule.iterate_modules"><a class="viewcode-back" href="../../../../sysmod.html#pyfrid.modules.system.app.BaseApplicationModule.iterate_modules">[docs]</a>    <span class="k">def</span> <span class="nf">iterate_modules</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">byname</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Iterator over modules presented in application. It yields a tuple *(name, reference)* for every module</span>
+<span class="sd">        depending on permissions (if given). If argument *byname* is False this iterator will return module *alias*.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">module_manager</span><span class="o">.</span><span class="n">iterate_objects</span><span class="p">(</span><span class="n">byname</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">permission</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_access</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">permission</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="k">yield</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="BaseApplicationModule.iterate_sysmods"><a class="viewcode-back" href="../../../../sysmod.html#pyfrid.modules.system.app.BaseApplicationModule.iterate_sysmods">[docs]</a>    <span class="k">def</span> <span class="nf">iterate_sysmods</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">byname</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Iterator over system modules presented in application. It yields a tuple *(name, reference)* for every module</span>
+<span class="sd">        depending on permissions (if given). If argument *byname* is False this iterator will return module *alias*.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">system_manager</span><span class="o">.</span><span class="n">iterate_objects</span><span class="p">(</span><span class="n">byname</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">permission</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_access</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">permission</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="k">yield</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+            </div>
+<div class="viewcode-block" id="BaseApplicationModule.iterate_objects"><a class="viewcode-back" href="../../../../sysmod.html#pyfrid.modules.system.app.BaseApplicationModule.iterate_objects">[docs]</a>    <span class="k">def</span> <span class="nf">iterate_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">byname</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Iterator over devices, commands and modules presented in application.</span>
+<span class="sd">        It yields a tuple *(name, reference)* for every object depending on permissions (if given).</span>
+<span class="sd">        If argument *byname* is False this iterator will return object *alias*.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterate_devices</span>  <span class="p">(</span><span class="n">permission</span><span class="p">,</span> <span class="n">byname</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterate_commands</span> <span class="p">(</span><span class="n">permission</span><span class="p">,</span> <span class="n">byname</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterate_modules</span>  <span class="p">(</span><span class="n">permission</span><span class="p">,</span> <span class="n">byname</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+        </div>
+<div class="viewcode-block" id="BaseApplicationModule.get_device"><a class="viewcode-back" href="../../../../sysmod.html#pyfrid.modules.system.app.BaseApplicationModule.get_device">[docs]</a>    <span class="k">def</span> <span class="nf">get_device</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">byname</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">exc</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns device presented in application by its name or alias depending on permissions (if given).</span>
+<span class="sd">        if *exc* is True the exception will be raised if device was not found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">byname</span><span class="p">:</span>
+            <span class="n">obj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">device_manager</span><span class="o">.</span><span class="n">get_object_byname</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">exc</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">obj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">device_manager</span><span class="o">.</span><span class="n">get_object_byalias</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">exc</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">obj</span><span class="o">!=</span><span class="bp">None</span> <span class="ow">and</span> <span class="n">permission</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_access</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">permission</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="k">return</span> <span class="n">obj</span>
+    </div>
+<div class="viewcode-block" id="BaseApplicationModule.get_command"><a class="viewcode-back" href="../../../../sysmod.html#pyfrid.modules.system.app.BaseApplicationModule.get_command">[docs]</a>    <span class="k">def</span> <span class="nf">get_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">permission</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="n">byname</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">exc</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns command presented in application by its name or alias depending on permissions (if given).</span>
+<span class="sd">        if *exc* is True the exception will be raised if command was not found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">byname</span><span class="p">:</span>
+            <span class="n">obj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">command_manager</span><span class="o">.</span><span class="n">get_object_byname</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">exc</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">obj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">command_manager</span><span class="o">.</span><span class="n">get_object_byalias</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">exc</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">obj</span><span class="o">!=</span><span class="bp">None</span> <span class="ow">and</span> <span class="n">permission</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_access</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">permission</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="k">return</span> <span class="n">obj</span>
+</div>
+<div class="viewcode-block" id="BaseApplicationModule.get_module"><a class="viewcode-back" href="../../../../sysmod.html#pyfrid.modules.system.app.BaseApplicationModule.get_module">[docs]</a>    <span class="k">def</span> <span class="nf">get_module</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">permission</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="n">byname</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">exc</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns module presented in application by its name or alias depending on permissions (if given).</span>
+<span class="sd">        if *exc* is True the exception will be raised if module was not found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">byname</span><span class="p">:</span>
+            <span class="n">obj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">module_manager</span><span class="o">.</span><span class="n">get_object_byname</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">exc</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">obj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">module_manager</span><span class="o">.</span><span class="n">get_object_byalias</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">exc</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">obj</span><span class="o">!=</span><span class="bp">None</span> <span class="ow">and</span> <span class="n">permission</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_access</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">permission</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="k">return</span> <span class="n">obj</span>
+                </div>
+<div class="viewcode-block" id="BaseApplicationModule.devices"><a class="viewcode-back" href="../../../../sysmod.html#pyfrid.modules.system.app.BaseApplicationModule.devices">[docs]</a>    <span class="k">def</span> <span class="nf">devices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">permission</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a list of names of devices presented in application.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterate_devices</span><span class="p">(</span><span class="n">permission</span><span class="p">)]</span>
+            </div>
+<div class="viewcode-block" id="BaseApplicationModule.commands"><a class="viewcode-back" href="../../../../sysmod.html#pyfrid.modules.system.app.BaseApplicationModule.commands">[docs]</a>    <span class="k">def</span> <span class="nf">commands</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">permission</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a list of names of commands presented in application.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterate_commands</span><span class="p">(</span><span class="n">permission</span><span class="p">)]</span>
+    </div>
+<div class="viewcode-block" id="BaseApplicationModule.modules"><a class="viewcode-back" href="../../../../sysmod.html#pyfrid.modules.system.app.BaseApplicationModule.modules">[docs]</a>    <span class="k">def</span> <span class="nf">modules</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">permission</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a list of names of modules presented in application.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterate_modules</span><span class="p">(</span><span class="n">permission</span><span class="p">)]</span>
+        </div>
+<div class="viewcode-block" id="BaseApplicationModule.objects"><a class="viewcode-back" href="../../../../sysmod.html#pyfrid.modules.system.app.BaseApplicationModule.objects">[docs]</a>    <span class="k">def</span> <span class="nf">objects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">permission</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a list of names of devices, commands and modules presented in application.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">(</span><span class="n">permission</span><span class="p">)</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">commands</span><span class="p">(</span><span class="n">permission</span><span class="p">)</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">modules</span><span class="p">(</span><span class="n">permission</span><span class="p">)</span>        
+</div>
+<div class="viewcode-block" id="BaseApplicationModule.sysmods"><a class="viewcode-back" href="../../../../sysmod.html#pyfrid.modules.system.app.BaseApplicationModule.sysmods">[docs]</a>    <span class="k">def</span> <span class="nf">sysmods</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">permission</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a list of names of system modules presented in application.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterate_sysmods</span><span class="p">(</span><span class="n">permission</span><span class="p">)]</span>
+</div>
+    <span class="k">def</span> <span class="nf">complete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">begidx</span><span class="p">,</span> <span class="n">endidx</span><span class="p">):</span> 
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">begidx</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">line</span><span class="o">=</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">cmd</span><span class="o">=</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">cmd</span><span class="p">:</span>
+                    <span class="n">obj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_command</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span><span class="n">byname</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">exc</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="p">:</span> <span class="k">return</span> <span class="p">[]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">completion_matches</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">call_complete</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+                        <span class="k">return</span> <span class="n">completion_matches</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">commands</span><span class="p">(</span><span class="n">permission</span><span class="o">=</span><span class="s">&quot;execute&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">get_completions</span><span class="p">(</span><span class="n">text</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">commands</span><span class="p">(</span><span class="n">permission</span><span class="o">=</span><span class="s">&quot;execute&quot;</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+    
+<div class="viewcode-block" id="BaseApplicationModule.status"><a class="viewcode-back" href="../../../../sysmod.html#pyfrid.modules.system.app.BaseApplicationModule.status">[docs]</a>    <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Status handler for application module. By default it shows number of devices, commands and modules in application&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">((</span><span class="s">&quot;Devices&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">device_manager</span><span class="p">),</span> <span class="s">&quot;&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&quot;Modules&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">module_manager</span><span class="p">),</span> <span class="s">&quot;&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&quot;Commands&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">module_manager</span><span class="p">),</span> <span class="s">&quot;&quot;</span><span class="p">))</span>    
+        </div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="BaseApplicationModule.projname"><a class="viewcode-back" href="../../../../sysmod.html#pyfrid.modules.system.app.BaseApplicationModule.projname">[docs]</a>    <span class="k">def</span> <span class="nf">projname</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns application name&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">projname</span>
+    </div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="BaseApplicationModule.projpath"><a class="viewcode-back" href="../../../../sysmod.html#pyfrid.modules.system.app.BaseApplicationModule.projpath">[docs]</a>    <span class="k">def</span> <span class="nf">projpath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns path to application&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">projpath</span>
+    </div>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">noauth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth_module</span><span class="o">.</span><span class="n">noauth</span>
+    
+    </div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">Pyfrid 0.1.1 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Denis Korolkov.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

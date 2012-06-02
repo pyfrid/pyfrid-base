@@ -1,0 +1,46 @@
+#The configuration file for application devices
+#
+# Description of parameters
+# The configuration of a device starts with "---" separator, and is a simple
+# set of parameters in the following form
+#
+# parameter: value
+#  
+# There are two main configuration parameters, which are enough to configure a device:
+# 
+# ---
+# alias: "device_alias"
+# name:  "device_name"
+
+# where "alias" is an internal readonly property defined in the implementation of a device
+# and "name" is a device name which is used in the application and visible to a user.
+#
+# The "active" property is used to include or exclude a device from the application.
+#
+# The "group" property is used to set a group name which a device belongs to,
+# if not given, it is an empty string.
+#
+# For more information, see the manual.
+#
+
+# dummy motor1
+---
+alias: dummy_motor1
+name: motor1
+active: True
+group: "Dummy"
+
+# dummy motor2
+---
+alias: dummy_motor2
+name: motor2
+active: True
+group: "Dummy"
+
+
+# dummy shutter
+---
+alias: dummy_shutter
+name: shutter
+active: True
+group: "Dummy"

@@ -1,0 +1,477 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Commands &mdash; Pyfrid 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/pyramid.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Pyfrid 0.1.1 documentation" href="index.html" />
+    <link rel="next" title="Devices" href="device.html" />
+    <link rel="prev" title="Tutorial" href="tutorial.html" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="_static/ie6.css" type="text/css" media="screen" charset="utf-8" />
+<![endif]-->
+
+  </head>
+  <body>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="device.html" title="Devices"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="tutorial.html" title="Tutorial"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Pyfrid 0.1.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-pyfrid.core.command">
+<span id="commands"></span><h1>Commands<a class="headerlink" href="#module-pyfrid.core.command" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="pyfrid.core.command.BaseCommand">
+<em class="property">class </em><tt class="descclassname">pyfrid.core.command.</tt><tt class="descname">BaseCommand</tt><big>(</big><em>app</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyfrid/core/command.html#BaseCommand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.core.command.BaseCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a base class for all types of commands.
+Commands are used in PyFRID as an interaction interface between users and application.
+Any command can be linked to other devices and modules with <em>use_device</em> and <em>use_module</em> functions by their aliases</p>
+<dl class="attribute">
+<dt id="pyfrid.core.command.BaseCommand.app">
+<tt class="descname">app</tt><a class="headerlink" href="#pyfrid.core.command.BaseCommand.app" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a reference to the parent</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.core.command.BaseCommand.busy">
+<tt class="descname">busy</tt><a class="reference internal" href="_modules/pyfrid/core/command.html#BaseCommand.busy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.core.command.BaseCommand.busy" title="Permalink to this definition">¶</a></dt>
+<dd><p>The property, which returns the value of <em>busy</em> flag</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseCommand.can">
+<tt class="descname">can</tt><big>(</big><em>method</em><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseCommand.can" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if a command with alias <em>method</em> can be performed by the object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseCommand.completions">
+<tt class="descname">completions</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyfrid/core/command.html#BaseCommand.completions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.core.command.BaseCommand.completions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns completions for the current command as a tuple. The first item of the tuple is a list of lists with
+possible completions for every command parameter.
+The second item is a boolean flag which True value indicates that command parameters are repeatable.
+Example for the command like <em>command parameter1 parameter2</em>, where possible values of paramater1 are par11, par12 
+and possible values of parameter2 are par21, par22: 
+&gt;&gt;&gt; return ([[&#8220;par11&#8221;, &#8220;par12&#8221;], [&#8220;par21&#8221;,&#8221;par22&#8221;]], False)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseCommand.debug">
+<tt class="descname">debug</tt><big>(</big><em>mesg</em><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseCommand.debug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Emits a debug message</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseCommand.error">
+<tt class="descname">error</tt><big>(</big><em>mesg</em><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseCommand.error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Emits an error message</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseCommand.exception">
+<tt class="descname">exception</tt><big>(</big><em>mesg</em><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseCommand.exception" title="Permalink to this definition">¶</a></dt>
+<dd><p>Emits an exception message.
+This function must be executed only with exception handler, when a traceback information exists</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseCommand.execute">
+<tt class="descname">execute</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyfrid/core/command.html#BaseCommand.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.core.command.BaseCommand.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract execution handler. Put here a code which must be run during the command execution</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseCommand.get_permission_groups">
+<tt class="descname">get_permission_groups</tt><big>(</big><em>permname</em><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseCommand.get_permission_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of permission groups (usergroups) for the permission. Permission is normally
+an alias of an action which corresponds to an alias of a command or any other special name related to the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseCommand.grammar">
+<tt class="descname">grammar</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyfrid/core/command.html#BaseCommand.grammar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.core.command.BaseCommand.grammar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract grammar handler. It must return grammar rules which are understood by the <em>VirtualMachineModule</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.core.command.BaseCommand.has_error">
+<tt class="descname">has_error</tt><a class="headerlink" href="#pyfrid.core.command.BaseCommand.has_error" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.core.command.BaseCommand.has_exception">
+<tt class="descname">has_exception</tt><a class="headerlink" href="#pyfrid.core.command.BaseCommand.has_exception" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.core.command.BaseCommand.has_info">
+<tt class="descname">has_info</tt><a class="headerlink" href="#pyfrid.core.command.BaseCommand.has_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.core.command.BaseCommand.has_warning">
+<tt class="descname">has_warning</tt><a class="headerlink" href="#pyfrid.core.command.BaseCommand.has_warning" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseCommand.info">
+<tt class="descname">info</tt><big>(</big><em>mesg</em><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseCommand.info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Emits a normal information message</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseCommand.initialize">
+<tt class="descname">initialize</tt><big>(</big><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseCommand.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize handler. Put here the code which must be run to initialize the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseCommand.iterate_settings">
+<tt class="descname">iterate_settings</tt><big>(</big><em>permission=''</em>, <em>fixed=False</em><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseCommand.iterate_settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Yields settings depending on the permission of the current logged in user and <em>fixed</em> flag</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseCommand.lock">
+<tt class="descname">lock</tt><big>(</big><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseCommand.lock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Locks this object.
+While the object is locked and function acquires a new locking, the object will be blocked.
+This is useful for devices. For example during moving the device no further moving operation can be done.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.core.command.BaseCommand.locked">
+<tt class="descname">locked</tt><a class="headerlink" href="#pyfrid.core.command.BaseCommand.locked" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseCommand.release">
+<tt class="descname">release</tt><big>(</big><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseCommand.release" title="Permalink to this definition">¶</a></dt>
+<dd><p>Release handler. Put here the code which must be run to release the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseCommand.runtime">
+<tt class="descname">runtime</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyfrid/core/command.html#BaseCommand.runtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.core.command.BaseCommand.runtime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract runtime handler. It returns a calculated time of execution of the command</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseCommand.settings">
+<tt class="descname">settings</tt><big>(</big><em>permission=''</em><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseCommand.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns a list of all settings, which are configurable by a user and
+have proper permissions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseCommand.shutdown">
+<tt class="descname">shutdown</tt><big>(</big><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseCommand.shutdown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shutdown handler</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseCommand.status">
+<tt class="descname">status</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyfrid/core/command.html#BaseCommand.status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.core.command.BaseCommand.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Standard status handler. It can be overwritten if needed</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseCommand.stop">
+<tt class="descname">stop</tt><big>(</big><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseCommand.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop handler. Put here the code which must be run to stop the object.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.core.command.BaseCommand.stopped">
+<tt class="descname">stopped</tt><a class="headerlink" href="#pyfrid.core.command.BaseCommand.stopped" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseCommand.unlock">
+<tt class="descname">unlock</tt><big>(</big><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseCommand.unlock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Releases the lock of the object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseCommand.validate">
+<tt class="descname">validate</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyfrid/core/command.html#BaseCommand.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.core.command.BaseCommand.validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract validate handler. It must return True or False after validating of values of the command parameters</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseCommand.validate_setting">
+<tt class="descname">validate_setting</tt><big>(</big><em>name</em>, <em>value=None</em>, <em>permission=''</em>, <em>check_value=True</em><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseCommand.validate_setting" title="Permalink to this definition">¶</a></dt>
+<dd><p>It is the same function as in <em>BaseObject</em> class, but with <em>permission</em> control</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseCommand.warning">
+<tt class="descname">warning</tt><big>(</big><em>mesg</em><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseCommand.warning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Emits a warning message</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyfrid.core.command.BaseThreadedCommand">
+<em class="property">class </em><tt class="descclassname">pyfrid.core.command.</tt><tt class="descname">BaseThreadedCommand</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyfrid/core/command.html#BaseThreadedCommand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.core.command.BaseThreadedCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base  command class for a command with multiple parameters, like:
+command object1 parameter1 object2 parameter2 ...
+By default its grammar rule accepts OBJECT and VALUE repeated from one to infinite number of times and can be overwritten if necessary.
+A threaded command expects that every object to which it is applied, has special function-agent <em>do_{command_alias}</em> which does the actual job.
+If the <em>numthreads</em> parameter of the class is &gt;1 the execution of the command for every OBJECT will be performed
+parallel in threads. The validation, runtime and completions handlers are automatic.</p>
+<dl class="attribute">
+<dt id="pyfrid.core.command.BaseThreadedCommand.app">
+<tt class="descname">app</tt><a class="headerlink" href="#pyfrid.core.command.BaseThreadedCommand.app" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a reference to the parent</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.core.command.BaseThreadedCommand.busy">
+<tt class="descname">busy</tt><a class="headerlink" href="#pyfrid.core.command.BaseThreadedCommand.busy" title="Permalink to this definition">¶</a></dt>
+<dd><p>The property, which returns the value of <em>busy</em> flag</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseThreadedCommand.can">
+<tt class="descname">can</tt><big>(</big><em>method</em><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseThreadedCommand.can" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if a command with alias <em>method</em> can be performed by the object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseThreadedCommand.debug">
+<tt class="descname">debug</tt><big>(</big><em>mesg</em><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseThreadedCommand.debug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Emits a debug message</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseThreadedCommand.error">
+<tt class="descname">error</tt><big>(</big><em>mesg</em><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseThreadedCommand.error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Emits an error message</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseThreadedCommand.exception">
+<tt class="descname">exception</tt><big>(</big><em>mesg</em><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseThreadedCommand.exception" title="Permalink to this definition">¶</a></dt>
+<dd><p>Emits an exception message.
+This function must be executed only with exception handler, when a traceback information exists</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseThreadedCommand.get_permission_groups">
+<tt class="descname">get_permission_groups</tt><big>(</big><em>permname</em><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseThreadedCommand.get_permission_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of permission groups (usergroups) for the permission. Permission is normally
+an alias of an action which corresponds to an alias of a command or any other special name related to the object.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.core.command.BaseThreadedCommand.has_error">
+<tt class="descname">has_error</tt><a class="headerlink" href="#pyfrid.core.command.BaseThreadedCommand.has_error" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.core.command.BaseThreadedCommand.has_exception">
+<tt class="descname">has_exception</tt><a class="headerlink" href="#pyfrid.core.command.BaseThreadedCommand.has_exception" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.core.command.BaseThreadedCommand.has_info">
+<tt class="descname">has_info</tt><a class="headerlink" href="#pyfrid.core.command.BaseThreadedCommand.has_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.core.command.BaseThreadedCommand.has_warning">
+<tt class="descname">has_warning</tt><a class="headerlink" href="#pyfrid.core.command.BaseThreadedCommand.has_warning" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseThreadedCommand.info">
+<tt class="descname">info</tt><big>(</big><em>mesg</em><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseThreadedCommand.info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Emits a normal information message</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseThreadedCommand.initialize">
+<tt class="descname">initialize</tt><big>(</big><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseThreadedCommand.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize handler. Put here the code which must be run to initialize the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseThreadedCommand.iterate_settings">
+<tt class="descname">iterate_settings</tt><big>(</big><em>permission=''</em>, <em>fixed=False</em><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseThreadedCommand.iterate_settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Yields settings depending on the permission of the current logged in user and <em>fixed</em> flag</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseThreadedCommand.lock">
+<tt class="descname">lock</tt><big>(</big><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseThreadedCommand.lock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Locks this object.
+While the object is locked and function acquires a new locking, the object will be blocked.
+This is useful for devices. For example during moving the device no further moving operation can be done.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.core.command.BaseThreadedCommand.locked">
+<tt class="descname">locked</tt><a class="headerlink" href="#pyfrid.core.command.BaseThreadedCommand.locked" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.core.command.BaseThreadedCommand.numthreads">
+<tt class="descname">numthreads</tt><em class="property"> = 1</em><a class="headerlink" href="#pyfrid.core.command.BaseThreadedCommand.numthreads" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of threads used for the command execution</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseThreadedCommand.release">
+<tt class="descname">release</tt><big>(</big><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseThreadedCommand.release" title="Permalink to this definition">¶</a></dt>
+<dd><p>Release handler. Put here the code which must be run to release the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseThreadedCommand.settings">
+<tt class="descname">settings</tt><big>(</big><em>permission=''</em><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseThreadedCommand.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns a list of all settings, which are configurable by a user and
+have proper permissions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseThreadedCommand.shutdown">
+<tt class="descname">shutdown</tt><big>(</big><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseThreadedCommand.shutdown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shutdown handler</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseThreadedCommand.status">
+<tt class="descname">status</tt><big>(</big><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseThreadedCommand.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Standard status handler. It can be overwritten if needed</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseThreadedCommand.stop">
+<tt class="descname">stop</tt><big>(</big><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseThreadedCommand.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop handler. Put here the code which must be run to stop the object.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.core.command.BaseThreadedCommand.stopped">
+<tt class="descname">stopped</tt><a class="headerlink" href="#pyfrid.core.command.BaseThreadedCommand.stopped" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseThreadedCommand.unlock">
+<tt class="descname">unlock</tt><big>(</big><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseThreadedCommand.unlock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Releases the lock of the object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseThreadedCommand.validate_setting">
+<tt class="descname">validate_setting</tt><big>(</big><em>name</em>, <em>value=None</em>, <em>permission=''</em>, <em>check_value=True</em><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseThreadedCommand.validate_setting" title="Permalink to this definition">¶</a></dt>
+<dd><p>It is the same function as in <em>BaseObject</em> class, but with <em>permission</em> control</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.command.BaseThreadedCommand.warning">
+<tt class="descname">warning</tt><big>(</big><em>mesg</em><big>)</big><a class="headerlink" href="#pyfrid.core.command.BaseThreadedCommand.warning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Emits a warning message</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="tutorial.html"
+                        title="previous chapter">Tutorial</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="device.html"
+                        title="next chapter">Devices</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="device.html" title="Devices"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="tutorial.html" title="Tutorial"
+             >previous</a> |</li>
+        <li><a href="index.html">Pyfrid 0.1.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Denis Korolkov.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

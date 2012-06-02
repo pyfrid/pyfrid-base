@@ -1,0 +1,24 @@
+#The configuration file for application modules
+#
+# Description of parameters
+# The configuration of a module starts with "---" separator, and is a simple
+# set of parameters in the following form
+#
+# parameter: value
+#  
+# There are two main configuration parameters, which are enough to configure a module:
+# 
+# ---
+# alias: "module_alias"
+# name:  "module_name"
+
+# where "alias" is an internal readonly property defined in the implementation of a module
+# and "name" is a module name which is used in the application and visible to a user.
+#
+# The "active" property is used to include or exclude a module from the application.
+#
+# The "group" property is used to set a group name which a module belongs to,
+# if not given, it is an empty string.
+#
+# For more information, see the manual.
+#

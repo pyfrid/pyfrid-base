@@ -1,0 +1,204 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Tutorial &mdash; Pyfrid 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/pyramid.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Pyfrid 0.1.1 documentation" href="index.html" />
+    <link rel="next" title="Commands" href="command.html" />
+    <link rel="prev" title="Introduction" href="intro.html" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="_static/ie6.css" type="text/css" media="screen" charset="utf-8" />
+<![endif]-->
+
+  </head>
+  <body>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="command.html" title="Commands"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="intro.html" title="Introduction"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Pyfrid 0.1.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="tutorial">
+<h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
+<p>PyFRID as a framework comes with a set of tools to make your life a bit easier.
+These tools are split into two categories: administration tools and application related tools.</p>
+<p>The administration tools are executed by the script <strong class="program">pyfrid-admin command_name</strong>
+and the application related tools are called as <strong class="program">python appname command_name</strong>,
+where <em>appname</em> and <em>command_name</em> are names of your application and a command which
+you would like to execute.</p>
+<div class="section" id="creating-a-project">
+<h2>Creating a project<a class="headerlink" href="#creating-a-project" title="Permalink to this headline">¶</a></h2>
+<p>Go to the directory where you would like to create your project and simply run:</p>
+<div class="highlight-python"><pre>$ pyfrid-admin newproj your_app_name</pre>
+</div>
+<p>Do not forget to change <em>your_app_name</em> to something real.
+If your project was created succesfully you will see the following message:</p>
+<div class="highlight-python"><pre>$ Project 'your_app_name' was successfully created</pre>
+</div>
+</div>
+<div class="section" id="starting-application">
+<h2>Starting application<a class="headerlink" href="#starting-application" title="Permalink to this headline">¶</a></h2>
+<p>The default application contains the most important commands and few dummy devices.
+It doesn&#8217;t do anything useful, but it is certainly enough to play with and to get a feeling of
+how it works.
+Outside the root directory of your project run:</p>
+<div class="highlight-python"><pre>$ python your_app_name cmdline</pre>
+</div>
+<p>You will see something like this:</p>
+<div class="highlight-python"><pre> logger       INFO  Initialization...
+ authentication       INFO  Initialization...
+             vm       INFO  Initialization...
+    application       INFO  Initialization...
+         motor1       INFO  Initialization...
+         motor2       INFO  Initialization...
+        shutter       INFO  Initialization...
+           init       INFO  Initialization...
+         status       INFO  Initialization...
+        whereis       INFO  Initialization...
+          sleep       INFO  Initialization...
+            get       INFO  Initialization...
+            set       INFO  Initialization...
+          macro       INFO  Initialization...
+           move       INFO  Initialization...
+      reference       INFO  Initialization...
+         switch       INFO  Initialization...
+your_app_name&gt;</pre>
+</div>
+<p>The command line tool has standard completion capabilities. Simply press on <em>Tab</em> twice and you will see a list
+of all possible commands:</p>
+<div class="highlight-python"><pre>get        init       macro      move       reference  set        sleep      status     switch     whereis</pre>
+</div>
+<p>If you have typed a command name, press <em>Tab</em> again and you will get completions
+for the command parameters.</p>
+<p>If you have installed package with web application you can run it by:</p>
+<div class="highlight-python"><pre>$ python your_app_name webapp</pre>
+</div>
+<p>This command will start the web server. The GUI can be accessed with your browser.</p>
+</div>
+<div class="section" id="creating-new-command">
+<h2>Creating new command<a class="headerlink" href="#creating-new-command" title="Permalink to this headline">¶</a></h2>
+<p>To create new command:</p>
+<div class="highlight-python"><pre>$ python your_app_name newcmd your_command_name</pre>
+</div>
+</div>
+<div class="section" id="creating-new-device">
+<h2>Creating new device<a class="headerlink" href="#creating-new-device" title="Permalink to this headline">¶</a></h2>
+<p>To create new device:</p>
+<div class="highlight-python"><pre>$ python your_app_name newcmd your_device_name</pre>
+</div>
+</div>
+<div class="section" id="creating-new-module">
+<h2>Creating new module<a class="headerlink" href="#creating-new-module" title="Permalink to this headline">¶</a></h2>
+<p>To create new module:</p>
+<div class="highlight-python"><pre>$ python your_app_name newcmd your_module_name</pre>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Tutorial</a><ul>
+<li><a class="reference internal" href="#creating-a-project">Creating a project</a></li>
+<li><a class="reference internal" href="#starting-application">Starting application</a></li>
+<li><a class="reference internal" href="#creating-new-command">Creating new command</a></li>
+<li><a class="reference internal" href="#creating-new-device">Creating new device</a></li>
+<li><a class="reference internal" href="#creating-new-module">Creating new module</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="intro.html"
+                        title="previous chapter">Introduction</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="command.html"
+                        title="next chapter">Commands</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="command.html" title="Commands"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="intro.html" title="Introduction"
+             >previous</a> |</li>
+        <li><a href="index.html">Pyfrid 0.1.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Denis Korolkov.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

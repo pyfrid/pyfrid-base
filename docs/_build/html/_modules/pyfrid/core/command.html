@@ -1,0 +1,321 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyfrid.core.command &mdash; Pyfrid 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/pyramid.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Pyfrid 0.1.1 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="../../../_static/ie6.css" type="text/css" media="screen" charset="utf-8" />
+<![endif]-->
+
+  </head>
+  <body>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Pyfrid 0.1.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pyfrid.core.command</h1><div class="highlight"><pre>
+<span class="c">#    This file is part of PyFRID.</span>
+<span class="c">#</span>
+<span class="c">#    PyFRID is free software: you can redistribute it and/or modify</span>
+<span class="c">#    it under the terms of the GNU General Public License as published by</span>
+<span class="c">#    the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c">#    (at your option) any later version.</span>
+<span class="c">#</span>
+<span class="c">#    PyFRID is distributed in the hope that it will be useful,</span>
+<span class="c">#    but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c">#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c">#    GNU General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c">#    You should have received a copy of the GNU General Public License</span>
+<span class="c">#    along with PyFRID.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="c">#</span>
+
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">ListType</span>
+
+<span class="kn">from</span> <span class="nn">pyfrid.utils.threadpool</span> <span class="kn">import</span> <span class="n">ThreadPool</span>
+<span class="kn">from</span> <span class="nn">pyfrid.core.signal</span> <span class="kn">import</span> <span class="n">Signal</span>
+<span class="kn">from</span> <span class="nn">pyfrid.core.descriptor</span> <span class="kn">import</span> <span class="n">UsedDeviceDescriptor</span><span class="p">,</span> <span class="n">UsedModuleDescriptor</span>
+<span class="kn">from</span> <span class="nn">pyfrid.core.object</span> <span class="kn">import</span> <span class="n">BaseProjectObject</span><span class="p">,</span> <span class="n">ObjectMetaClass</span><span class="p">,</span> <span class="n">set_descriptors</span>
+<span class="kn">from</span> <span class="nn">pyfrid.core.registry</span> <span class="kn">import</span> <span class="n">ObjectRegistry</span><span class="p">,</span> <span class="n">RegistryError</span>
+
+<span class="n">command_registry</span><span class="o">=</span><span class="n">ObjectRegistry</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">get_completions</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">compbase</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">compbase</span><span class="p">)</span> <span class="o">!=</span> <span class="n">ListType</span><span class="p">:</span>
+        <span class="n">compbase</span><span class="o">=</span><span class="p">[</span><span class="n">compbase</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
+        <span class="n">completions</span> <span class="o">=</span> <span class="n">compbase</span><span class="p">[:]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">completions</span> <span class="o">=</span> <span class="p">[</span> <span class="n">f</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">compbase</span>
+            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+            <span class="p">]</span>
+    <span class="k">return</span> <span class="n">completions</span>
+    
+<span class="k">class</span> <span class="nc">CommandMetaClass</span><span class="p">(</span><span class="n">ObjectMetaClass</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="n">d</span><span class="p">[</span><span class="s">&quot;_used_devices&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">set_descriptors</span><span class="p">(</span><span class="s">&quot;_used_devices&quot;</span><span class="p">,</span> <span class="n">UsedDeviceDescriptor</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+        <span class="n">d</span><span class="p">[</span><span class="s">&quot;_used_modules&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">set_descriptors</span><span class="p">(</span><span class="s">&quot;_used_modules&quot;</span><span class="p">,</span> <span class="n">UsedModuleDescriptor</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ObjectMetaClass</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="n">ObjectMetaClass</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span> <span class="n">command_registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">cls</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">RegistryError</span><span class="p">,</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">RegistryError</span><span class="p">(</span><span class="s">&quot;Exception while registering class &#39;{0}&#39;: {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">err</span><span class="p">))</span>
+
+<div class="viewcode-block" id="BaseCommand"><a class="viewcode-back" href="../../../command.html#pyfrid.core.command.BaseCommand">[docs]</a><span class="k">class</span> <span class="nc">BaseCommand</span><span class="p">(</span><span class="n">BaseProjectObject</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This is a base class for all types of commands.</span>
+<span class="sd">     Commands are used in PyFRID as an interaction interface between users and application.</span>
+<span class="sd">     Any command can be linked to other devices and modules with *use_device* and *use_module* functions by their aliases</span>
+<span class="sd">     &quot;&quot;&quot;</span>
+    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">CommandMetaClass</span>
+    
+    <span class="n">_used_devices</span><span class="o">=</span><span class="p">{}</span>
+    <span class="n">_used_modules</span><span class="o">=</span><span class="p">{}</span>
+        
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">descr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_used_devices</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="n">dev</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">device_manager</span><span class="o">.</span><span class="n">get_object_byalias</span><span class="p">(</span><span class="n">descr</span><span class="o">.</span><span class="n">alias</span><span class="p">,</span> <span class="n">exc</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="n">descr</span><span class="o">.</span><span class="n">object</span><span class="o">=</span><span class="n">dev</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">descr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_used_modules</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="n">mod</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">get_module</span><span class="p">(</span><span class="n">descr</span><span class="o">.</span><span class="n">alias</span><span class="p">,</span><span class="n">exc</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="n">descr</span><span class="o">.</span><span class="n">object</span><span class="o">=</span><span class="n">mod</span>
+              
+        <span class="nb">super</span><span class="p">(</span><span class="n">BaseCommand</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">before_execute_signal</span><span class="o">=</span><span class="n">Signal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">after_execute_signal</span><span class="o">=</span><span class="n">Signal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">before_validate_signal</span><span class="o">=</span><span class="n">Signal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">after_validate_signal</span><span class="o">=</span><span class="n">Signal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_busy</span><span class="o">=</span><span class="bp">False</span>
+    
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="BaseCommand.busy"><a class="viewcode-back" href="../../../command.html#pyfrid.core.command.BaseCommand.busy">[docs]</a>    <span class="k">def</span> <span class="nf">busy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The property, which returns the value of *busy* flag&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_busy</span>
+        </div>
+    <span class="k">def</span> <span class="nf">call_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Caller for the *execute* handler. It keeps *busy* flag True value, while execution is performed&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_busy</span><span class="o">=</span><span class="bp">True</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_busy</span><span class="o">=</span><span class="bp">False</span>
+        
+    <span class="k">def</span> <span class="nf">call_grammar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Caller for *grammar* handler&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">grammar</span><span class="p">()</span>
+    
+    <span class="k">def</span> <span class="nf">call_runtime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Caller for *runtime* handler&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+    
+    <span class="k">def</span> <span class="nf">call_validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Caller for *runtime* handler&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">call_complete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Caller for *runtime* handler.</span>
+<span class="sd">        Returns the completion list for the typed text</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">completions</span><span class="p">,</span><span class="n">repeat</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">completions</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">completions</span><span class="p">:</span> <span class="k">return</span> <span class="p">[]</span>
+        <span class="n">l</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">())</span><span class="o">-</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="n">text</span> <span class="ow">and</span> <span class="n">l</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span> <span class="n">l</span><span class="o">-=</span><span class="mi">1</span>
+        <span class="n">compl</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">cl</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">completions</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">repeat</span><span class="p">:</span> <span class="n">compl</span><span class="o">=</span><span class="n">completions</span><span class="p">[</span><span class="n">l</span><span class="o">-</span><span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="o">/</span><span class="n">cl</span><span class="p">)</span><span class="o">*</span><span class="n">cl</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span> <span class="n">compl</span><span class="o">=</span><span class="n">completions</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span> <span class="k">return</span> <span class="p">[]</span>
+        <span class="k">return</span> <span class="n">get_completions</span><span class="p">(</span><span class="n">text</span><span class="p">,</span><span class="n">compl</span><span class="p">)</span>
+    
+    <span class="nd">@abc.abstractmethod</span>
+<div class="viewcode-block" id="BaseCommand.execute"><a class="viewcode-back" href="../../../command.html#pyfrid.core.command.BaseCommand.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Abstract execution handler. Put here a code which must be run during the command execution&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+    </div>
+    <span class="nd">@abc.abstractmethod</span>
+<div class="viewcode-block" id="BaseCommand.grammar"><a class="viewcode-back" href="../../../command.html#pyfrid.core.command.BaseCommand.grammar">[docs]</a>    <span class="k">def</span> <span class="nf">grammar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Abstract grammar handler. It must return grammar rules which are understood by the *VirtualMachineModule*&quot;&quot;&quot;</span>  
+        <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="BaseCommand.completions"><a class="viewcode-back" href="../../../command.html#pyfrid.core.command.BaseCommand.completions">[docs]</a>    <span class="k">def</span> <span class="nf">completions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns completions for the current command as a tuple. The first item of the tuple is a list of lists with</span>
+<span class="sd">        possible completions for every command parameter.</span>
+<span class="sd">        The second item is a boolean flag which True value indicates that command parameters are repeatable.</span>
+<span class="sd">        Example for the command like *command parameter1 parameter2*, where possible values of paramater1 are par11, par12 </span>
+<span class="sd">        and possible values of parameter2 are par21, par22: </span>
+<span class="sd">        &gt;&gt;&gt; return ([[&quot;par11&quot;, &quot;par12&quot;], [&quot;par21&quot;,&quot;par22&quot;]], False) </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">([],</span><span class="bp">False</span><span class="p">)</span>
+    </div>
+    <span class="nd">@abc.abstractmethod</span>          
+<div class="viewcode-block" id="BaseCommand.validate"><a class="viewcode-back" href="../../../command.html#pyfrid.core.command.BaseCommand.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Abstract validate handler. It must return True or False after validating of values of the command parameters&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">True</span>
+    </div>
+    <span class="nd">@abc.abstractmethod</span>
+<div class="viewcode-block" id="BaseCommand.runtime"><a class="viewcode-back" href="../../../command.html#pyfrid.core.command.BaseCommand.runtime">[docs]</a>    <span class="k">def</span> <span class="nf">runtime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Abstract runtime handler. It returns a calculated time of execution of the command&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+    </div>
+<div class="viewcode-block" id="BaseCommand.status"><a class="viewcode-back" href="../../../command.html#pyfrid.core.command.BaseCommand.status">[docs]</a>    <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Standard status handler. It can be overwritten if needed&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">((</span><span class="s">&quot;busy&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">busy</span><span class="p">,</span><span class="s">&quot;&quot;</span><span class="p">),)</span>
+
+        </div></div>
+<div class="viewcode-block" id="BaseThreadedCommand"><a class="viewcode-back" href="../../../command.html#pyfrid.core.command.BaseThreadedCommand">[docs]</a><span class="k">class</span> <span class="nc">BaseThreadedCommand</span><span class="p">(</span><span class="n">BaseCommand</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base  command class for a command with multiple parameters, like:</span>
+<span class="sd">    command object1 parameter1 object2 parameter2 ...</span>
+<span class="sd">    By default its grammar rule accepts OBJECT and VALUE repeated from one to infinite number of times and can be overwritten if necessary.</span>
+<span class="sd">    A threaded command expects that every object to which it is applied, has special function-agent *do_{command_alias}* which does the actual job.</span>
+<span class="sd">    If the *numthreads* parameter of the class is &gt;1 the execution of the command for every OBJECT will be performed</span>
+<span class="sd">    parallel in threads. The validation, runtime and completions handlers are automatic. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">numthreads</span><span class="o">=</span><span class="mi">1</span> <span class="c">#: number of threads used for the command execution</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BaseThreadedCommand</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">before_each_execute_signal</span><span class="o">=</span><span class="n">Signal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">after_each_execute_signal</span><span class="o">=</span><span class="n">Signal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">numbaseargs</span><span class="o">=</span><span class="mi">1</span>
+        <span class="n">gr</span><span class="p">,</span> <span class="n">foo</span><span class="p">,</span> <span class="n">_</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">grammar</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">gr</span><span class="p">)</span><span class="o">==</span><span class="n">ListType</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">numbaseargs</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">gr</span><span class="p">)</span>
+            
+    <span class="k">def</span> <span class="nf">completions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">([[</span><span class="n">obj</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span><span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">iterate_objects</span><span class="p">(</span><span class="n">byname</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alias</span><span class="p">)</span> <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">can</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alias</span><span class="p">)]],</span><span class="bp">True</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">arguments</span><span class="o">=</span><span class="p">[</span><span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">numbaseargs</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">numbaseargs</span><span class="p">)]</span>
+        <span class="n">pool</span><span class="o">=</span><span class="n">ThreadPool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">numthreads</span><span class="p">,</span> <span class="n">persist</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">args_</span> <span class="ow">in</span> <span class="n">arguments</span><span class="p">:</span>
+            <span class="n">pool</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">call_each_execute</span><span class="p">,</span> <span class="o">*</span><span class="n">args_</span><span class="p">)</span> 
+        <span class="n">pool</span><span class="o">.</span><span class="n">join_all</span><span class="p">()</span>
+    
+    <span class="k">def</span> <span class="nf">call_each_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">f</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="s">&quot;do_{0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alias</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">call_each_validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">can</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alias</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;no method &#39;{0}&#39; for object &#39;{1}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alias</span><span class="p">,</span><span class="n">obj</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="s">&quot;validate_{0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alias</span><span class="p">))(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">return</span> <span class="bp">True</span>
+    
+    <span class="k">def</span> <span class="nf">call_each_runtime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="s">&quot;runtime_{0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alias</span><span class="p">))(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+                
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">arguments</span><span class="o">=</span><span class="p">[(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">numbaseargs</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">numbaseargs</span><span class="o">&gt;</span><span class="mi">1</span> <span class="k">else</span> <span class="p">[])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">numbaseargs</span><span class="p">)]</span>
+        <span class="n">res</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">call_each_validate</span><span class="p">(</span><span class="n">arg</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="o">*</span><span class="n">arg</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">arguments</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">runtime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="n">arguments</span><span class="o">=</span><span class="p">[(</span><span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">numbaseargs</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">numbaseargs</span><span class="o">&gt;</span><span class="mi">1</span> <span class="k">else</span> <span class="p">[])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">numbaseargs</span><span class="p">)]</span>
+        <span class="n">res</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">call_each_runtime</span><span class="p">(</span><span class="n">arg</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="o">*</span><span class="n">arg</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">arguments</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">grammar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">pyfrid.modules.system.vm.leplvm</span> <span class="kn">import</span> <span class="n">OBJECT</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">OBJECT</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+    </div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Pyfrid 0.1.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Denis Korolkov.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

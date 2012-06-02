@@ -1,0 +1,69 @@
+#The configuration file for system modules
+
+# Description of parameters
+# The configuration of a system module starts with "---" separator, and is a simple
+# set of parameters in the following form
+#
+# parameter: value
+#  
+# There are two main configuration parameters, which are enough to configure a system module:
+# 
+# ---
+# alias: "module_alias"
+# name:  "module_name"
+
+# where "alias" is an internal readonly property defined in the implementation of a system module
+# and "name" is a system module name which is used in the application and visible to a user.
+#
+# The "active" property is used to include or exclude a system module from the application.
+# However, use it carefully, only if you know what you are doing.
+# Normally, all system modules are active and you will need this parameter if you would like to switch
+# between different versions.
+#
+# The "group" property is used to set a group name which a system module belongs to,
+# if not given, it is an empty string.
+#
+# For more information, see the manual.
+#
+
+# logger module
+# manages logging messages in the application
+---
+alias: logger
+name: logger
+active: True
+group: "System"
+stdout_log: True      # logging to standard output
+file_log: True        # logging to the logfile
+email_log: False      # logging to email of a current user (depends on authentication module)
+debugmode: False      # set it to True if you like to see debug messages
+
+# authentication module
+# manages authentication service in the application
+# the application can support different authentication modules (see manual)  
+---
+alias: authentication
+name: authentication
+active: True
+group: "System"
+
+# virtual machine module
+# performs parsing, validation of arguments and execution of commands
+---
+alias: virtual_machine
+name: vm
+active: True
+group: "System"
+
+# application module
+# it is aware of commands, modules and devices configured in the application and
+# at the same time plays a role of a sandbox for them.    
+---
+alias: application
+name: application
+active: True
+instrument:  ""                     # put a name of your instrument
+responsible: ""                     # put your name here 
+email:       ""                     # put your email here
+group: "System"
+    

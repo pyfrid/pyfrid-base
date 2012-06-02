@@ -1,0 +1,733 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>System modules &mdash; Pyfrid 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/pyramid.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Pyfrid 0.1.1 documentation" href="index.html" />
+    <link rel="prev" title="Modules" href="module.html" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="_static/ie6.css" type="text/css" media="screen" charset="utf-8" />
+<![endif]-->
+
+  </head>
+  <body>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="module.html" title="Modules"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Pyfrid 0.1.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="system-modules">
+<h1>System modules<a class="headerlink" href="#system-modules" title="Permalink to this headline">¶</a></h1>
+<p>System module is a building block of your application. The main difference between normal modules and system modules is a type of module&#8217;s parent.
+The parent of system module is an application related management command, like <em>cmdline</em> for command line application or <em>webapp</em> for web application.
+These management commands are responsible for chosing a proper configuration manager, creation of devices, modules and commands of your application
+and other low level tasks. Having a reference to the application management command, a system module has access to configuration, other system modules,
+managers of devices, commands and modules of your application. All system modules: Logger, Application, Virtual Machine and Authentication, presented
+currently in PyFRID are described in the following subsections.</p>
+<div class="section" id="base-system-module">
+<h2>Base System Module<a class="headerlink" href="#base-system-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pyfrid.core.sysmod">
+<span id="system-module-class-and-functions"></span><h3>System Module class and functions<a class="headerlink" href="#module-pyfrid.core.sysmod" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
+<div class="section" id="application-module">
+<h2>Application Module<a class="headerlink" href="#application-module" title="Permalink to this headline">¶</a></h2>
+<p>Application module systematize devices, commands and modules of your application, except system modules of course.
+It also plays a role of a sandbox for them, giving a limited access to the functionality of other system modules like authentication,
+logger and virtual machine. It also contains useful generators to iterate over objects and methods which can be used in other modules
+and commands during the runtime of application.</p>
+<div class="section" id="module-pyfrid.modules.system.app">
+<span id="application-module-class-and-functions"></span><h3>Application Module class and functions<a class="headerlink" href="#module-pyfrid.modules.system.app" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="pyfrid.modules.system.app.BaseApplicationModule">
+<em class="property">class </em><tt class="descclassname">pyfrid.modules.system.app.</tt><tt class="descname">BaseApplicationModule</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/app.html#BaseApplicationModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.app.BaseApplicationModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is base class for application module. The application module is a system module which
+manages devices, commands and modules of your application, executes and validates the code by
+using <em>virtual_machine</em> system module, control permissions to objects using <em>authentication</em> module.
+It also has useful tools for developers to iterate over objects of different types.</p>
+<dl class="attribute">
+<dt id="pyfrid.modules.system.app.BaseApplicationModule.busy">
+<tt class="descname">busy</tt><a class="reference internal" href="_modules/pyfrid/modules/system/app.html#BaseApplicationModule.busy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.app.BaseApplicationModule.busy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls property of the same name of <em>virtual_machine</em> module.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.app.BaseApplicationModule.commands">
+<tt class="descname">commands</tt><big>(</big><em>permission=''</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/app.html#BaseApplicationModule.commands"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.app.BaseApplicationModule.commands" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of names of commands presented in application.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.app.BaseApplicationModule.devices">
+<tt class="descname">devices</tt><big>(</big><em>permission=''</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/app.html#BaseApplicationModule.devices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.app.BaseApplicationModule.devices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of names of devices presented in application.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.app.BaseApplicationModule.execute_code">
+<tt class="descname">execute_code</tt><big>(</big><em>code</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/app.html#BaseApplicationModule.execute_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.app.BaseApplicationModule.execute_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes a code in another thread. Before execution every system module including <em>application</em> module is released.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.app.BaseApplicationModule.get_command">
+<tt class="descname">get_command</tt><big>(</big><em>name</em>, <em>permission=''</em>, <em>byname=False</em>, <em>exc=False</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/app.html#BaseApplicationModule.get_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.app.BaseApplicationModule.get_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns command presented in application by its name or alias depending on permissions (if given).
+if <em>exc</em> is True the exception will be raised if command was not found.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.app.BaseApplicationModule.get_device">
+<tt class="descname">get_device</tt><big>(</big><em>name</em>, <em>permission=''</em>, <em>byname=False</em>, <em>exc=False</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/app.html#BaseApplicationModule.get_device"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.app.BaseApplicationModule.get_device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns device presented in application by its name or alias depending on permissions (if given).
+if <em>exc</em> is True the exception will be raised if device was not found.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.app.BaseApplicationModule.get_module">
+<tt class="descname">get_module</tt><big>(</big><em>name</em>, <em>permission=''</em>, <em>byname=False</em>, <em>exc=False</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/app.html#BaseApplicationModule.get_module"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.app.BaseApplicationModule.get_module" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns module presented in application by its name or alias depending on permissions (if given).
+if <em>exc</em> is True the exception will be raised if module was not found.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.app.BaseApplicationModule.initialize">
+<tt class="descname">initialize</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/app.html#BaseApplicationModule.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.app.BaseApplicationModule.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialization handler. It iterates over all devices, modules and commands and calls <em>initialize</em> handler of each object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.app.BaseApplicationModule.iterate_commands">
+<tt class="descname">iterate_commands</tt><big>(</big><em>permission=''</em>, <em>byname=False</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/app.html#BaseApplicationModule.iterate_commands"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.app.BaseApplicationModule.iterate_commands" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterator over commands in application. It yields a tuple <em>(name, reference)</em> for every command
+depending on permissions (if given). If argument <em>byname</em> is False this iterator will return command <em>alias</em>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.app.BaseApplicationModule.iterate_devices">
+<tt class="descname">iterate_devices</tt><big>(</big><em>permission=''</em>, <em>byname=False</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/app.html#BaseApplicationModule.iterate_devices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.app.BaseApplicationModule.iterate_devices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterator over devices in application. It yields a tuple <em>(name, reference)</em> for every device
+depending on permissions (if given). If argument <em>byname</em> is False this iterator will return device <em>alias</em>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.app.BaseApplicationModule.iterate_modules">
+<tt class="descname">iterate_modules</tt><big>(</big><em>permission=''</em>, <em>byname=False</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/app.html#BaseApplicationModule.iterate_modules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.app.BaseApplicationModule.iterate_modules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterator over modules presented in application. It yields a tuple <em>(name, reference)</em> for every module
+depending on permissions (if given). If argument <em>byname</em> is False this iterator will return module <em>alias</em>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.app.BaseApplicationModule.iterate_objects">
+<tt class="descname">iterate_objects</tt><big>(</big><em>permission=''</em>, <em>byname=False</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/app.html#BaseApplicationModule.iterate_objects"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.app.BaseApplicationModule.iterate_objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterator over devices, commands and modules presented in application.
+It yields a tuple <em>(name, reference)</em> for every object depending on permissions (if given).
+If argument <em>byname</em> is False this iterator will return object <em>alias</em>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.app.BaseApplicationModule.iterate_sysmods">
+<tt class="descname">iterate_sysmods</tt><big>(</big><em>permission=''</em>, <em>byname=False</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/app.html#BaseApplicationModule.iterate_sysmods"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.app.BaseApplicationModule.iterate_sysmods" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterator over system modules presented in application. It yields a tuple <em>(name, reference)</em> for every module
+depending on permissions (if given). If argument <em>byname</em> is False this iterator will return module <em>alias</em>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.app.BaseApplicationModule.login">
+<tt class="descname">login</tt><big>(</big><em>login</em>, <em>password</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/app.html#BaseApplicationModule.login"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.app.BaseApplicationModule.login" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls function of the same name of <em>authentication</em> module.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.app.BaseApplicationModule.logout">
+<tt class="descname">logout</tt><big>(</big><em>login</em>, <em>password</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/app.html#BaseApplicationModule.logout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.app.BaseApplicationModule.logout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls function of the same name of <em>authentication</em> module.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.app.BaseApplicationModule.modules">
+<tt class="descname">modules</tt><big>(</big><em>permission=''</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/app.html#BaseApplicationModule.modules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.app.BaseApplicationModule.modules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of names of modules presented in application.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.app.BaseApplicationModule.objects">
+<tt class="descname">objects</tt><big>(</big><em>permission=''</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/app.html#BaseApplicationModule.objects"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.app.BaseApplicationModule.objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of names of devices, commands and modules presented in application.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.modules.system.app.BaseApplicationModule.projname">
+<tt class="descname">projname</tt><a class="reference internal" href="_modules/pyfrid/modules/system/app.html#BaseApplicationModule.projname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.app.BaseApplicationModule.projname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns application name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.modules.system.app.BaseApplicationModule.projpath">
+<tt class="descname">projpath</tt><a class="reference internal" href="_modules/pyfrid/modules/system/app.html#BaseApplicationModule.projpath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.app.BaseApplicationModule.projpath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns path to application</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.app.BaseApplicationModule.release">
+<tt class="descname">release</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/app.html#BaseApplicationModule.release"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.app.BaseApplicationModule.release" title="Permalink to this definition">¶</a></dt>
+<dd><p>Release handler. It iterates over all devices, modules and commands and calls <em>release</em> handler of each object.
+This handler is executed before running a command or a code.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.app.BaseApplicationModule.shutdown">
+<tt class="descname">shutdown</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/app.html#BaseApplicationModule.shutdown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.app.BaseApplicationModule.shutdown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shutdown handler. It iterates over all devices, modules and commands and calls <em>shutdown</em> handler of each object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.app.BaseApplicationModule.status">
+<tt class="descname">status</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/app.html#BaseApplicationModule.status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.app.BaseApplicationModule.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Status handler for application module. By default it shows number of devices, commands and modules in application</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.app.BaseApplicationModule.stop">
+<tt class="descname">stop</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/app.html#BaseApplicationModule.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.app.BaseApplicationModule.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shutdown handler. It iterates over all devices, modules and commands and calls <em>stop</em> handler of each object.
+Stopping is performed in another thread in order to avoid any blocking of the main thread of application.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.app.BaseApplicationModule.sysmods">
+<tt class="descname">sysmods</tt><big>(</big><em>permission=''</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/app.html#BaseApplicationModule.sysmods"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.app.BaseApplicationModule.sysmods" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of names of system modules presented in application.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.app.BaseApplicationModule.validate_access">
+<tt class="descname">validate_access</tt><big>(</big><em>obj</em>, <em>permission</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/app.html#BaseApplicationModule.validate_access"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.app.BaseApplicationModule.validate_access" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates access to an object by checking object&#8217;s permission.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.app.BaseApplicationModule.validate_code">
+<tt class="descname">validate_code</tt><big>(</big><em>code</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/app.html#BaseApplicationModule.validate_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.app.BaseApplicationModule.validate_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates a code in another thread.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="virtual-machine-module">
+<h2>Virtual Machine Module<a class="headerlink" href="#virtual-machine-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pyfrid.modules.system.vm.core.vm">
+<span id="base-virtual-machine-module-class-and-functions"></span><h3>Base Virtual Machine Module class and functions<a class="headerlink" href="#module-pyfrid.modules.system.vm.core.vm" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="pyfrid.modules.system.vm.core.vm.BaseVMModule">
+<em class="property">class </em><tt class="descclassname">pyfrid.modules.system.vm.core.vm.</tt><tt class="descname">BaseVMModule</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/vm/core/vm.html#BaseVMModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.vm.core.vm.BaseVMModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is base class of a virtual machine module. It has basic functionality and
+defines few abstract methods, which must be implemented in subclasses.</p>
+<dl class="attribute">
+<dt id="pyfrid.modules.system.vm.core.vm.BaseVMModule.busy">
+<tt class="descname">busy</tt><a class="reference internal" href="_modules/pyfrid/modules/system/vm/core/vm.html#BaseVMModule.busy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.vm.core.vm.BaseVMModule.busy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if there is a running command.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.modules.system.vm.core.vm.BaseVMModule.current_line">
+<tt class="descname">current_line</tt><a class="reference internal" href="_modules/pyfrid/modules/system/vm/core/vm.html#BaseVMModule.current_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.vm.core.vm.BaseVMModule.current_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a current line of a macro.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.modules.system.vm.core.vm.BaseVMModule.current_macro">
+<tt class="descname">current_macro</tt><a class="reference internal" href="_modules/pyfrid/modules/system/vm/core/vm.html#BaseVMModule.current_macro"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.vm.core.vm.BaseVMModule.current_macro" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a filename of a currently running macro.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.modules.system.vm.core.vm.BaseVMModule.elapsed">
+<tt class="descname">elapsed</tt><a class="reference internal" href="_modules/pyfrid/modules/system/vm/core/vm.html#BaseVMModule.elapsed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.vm.core.vm.BaseVMModule.elapsed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an estimated elapsed time.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.modules.system.vm.core.vm.BaseVMModule.err_stop">
+<tt class="descname">err_stop</tt><a class="headerlink" href="#pyfrid.modules.system.vm.core.vm.BaseVMModule.err_stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>boolean setting which indicates whether to stop execution of a command or a macro
+when error was emitted</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.modules.system.vm.core.vm.BaseVMModule.exc_stop">
+<tt class="descname">exc_stop</tt><a class="headerlink" href="#pyfrid.modules.system.vm.core.vm.BaseVMModule.exc_stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>boolean setting which indicates whether to stop execution of a command or a macro
+when exception was emitted</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.vm.core.vm.BaseVMModule.execute_ast">
+<tt class="descname">execute_ast</tt><big>(</big><em>ast</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/vm/core/vm.html#BaseVMModule.execute_ast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.vm.core.vm.BaseVMModule.execute_ast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract method which executes a code, normally after parsing and validation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.vm.core.vm.BaseVMModule.execute_code">
+<tt class="descname">execute_code</tt><big>(</big><em>code</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/vm/core/vm.html#BaseVMModule.execute_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.vm.core.vm.BaseVMModule.execute_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main method, which performs execution of a code. Before execution the signal <em>before_execute_signal</em>
+is emitted. If parsing and validation of a code were successful, this function starts execution of a AST.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.modules.system.vm.core.vm.BaseVMModule.finishes">
+<tt class="descname">finishes</tt><a class="reference internal" href="_modules/pyfrid/modules/system/vm/core/vm.html#BaseVMModule.finishes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.vm.core.vm.BaseVMModule.finishes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an estimated time when a currently running command or macro will be finished.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.vm.core.vm.BaseVMModule.parse_code">
+<tt class="descname">parse_code</tt><big>(</big><em>code</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/vm/core/vm.html#BaseVMModule.parse_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.vm.core.vm.BaseVMModule.parse_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract method which parses a code.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.modules.system.vm.core.vm.BaseVMModule.runtime">
+<tt class="descname">runtime</tt><a class="reference internal" href="_modules/pyfrid/modules/system/vm/core/vm.html#BaseVMModule.runtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.vm.core.vm.BaseVMModule.runtime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an estimated running time of a command or a macro.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.modules.system.vm.core.vm.BaseVMModule.started">
+<tt class="descname">started</tt><a class="reference internal" href="_modules/pyfrid/modules/system/vm/core/vm.html#BaseVMModule.started"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.vm.core.vm.BaseVMModule.started" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns time stamp when a macro or a command was started.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.vm.core.vm.BaseVMModule.status">
+<tt class="descname">status</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/vm/core/vm.html#BaseVMModule.status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.vm.core.vm.BaseVMModule.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Status handler of this module. It returns a current running filename, current line, 
+time when a command was started, estimated runtime, elapsed time and time when current command 
+will finish.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.vm.core.vm.BaseVMModule.validate_ast">
+<tt class="descname">validate_ast</tt><big>(</big><em>ast</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/vm/core/vm.html#BaseVMModule.validate_ast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.vm.core.vm.BaseVMModule.validate_ast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract method which validates a code and returns its estimated runtime, normally after parsing it.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.vm.core.vm.BaseVMModule.validate_code">
+<tt class="descname">validate_code</tt><big>(</big><em>code</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/vm/core/vm.html#BaseVMModule.validate_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.vm.core.vm.BaseVMModule.validate_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for a code validation.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyfrid.modules.system.vm.leplvm">
+<span id="lepl-virtual-machine-module-class-and-functions"></span><h3>Lepl Virtual Machine Module class and functions<a class="headerlink" href="#module-pyfrid.modules.system.vm.leplvm" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="pyfrid.modules.system.vm.leplvm.BaseLeplVMModule">
+<em class="property">class </em><tt class="descclassname">pyfrid.modules.system.vm.leplvm.</tt><tt class="descname">BaseLeplVMModule</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/vm/leplvm.html#BaseLeplVMModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.vm.leplvm.BaseLeplVMModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is virtual machine system module, based on LEPL parser.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyfrid.modules.system.vm.leplvm.BaseNode">
+<em class="property">class </em><tt class="descclassname">pyfrid.modules.system.vm.leplvm.</tt><tt class="descname">BaseNode</tt><a class="reference internal" href="_modules/pyfrid/modules/system/vm/leplvm.html#BaseNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.vm.leplvm.BaseNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base Node class for all nodes.</p>
+<dl class="method">
+<dt id="pyfrid.modules.system.vm.leplvm.BaseNode.process">
+<tt class="descname">process</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/vm/leplvm.html#BaseNode.process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.vm.leplvm.BaseNode.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Analyzes the parameters and returns the value</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyfrid.modules.system.vm.leplvm.CmdStmtNode">
+<em class="property">class </em><tt class="descclassname">pyfrid.modules.system.vm.leplvm.</tt><tt class="descname">CmdStmtNode</tt><a class="reference internal" href="_modules/pyfrid/modules/system/vm/leplvm.html#CmdStmtNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.vm.leplvm.CmdStmtNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class of macro command node</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyfrid.modules.system.vm.leplvm.ValueNode">
+<em class="property">class </em><tt class="descclassname">pyfrid.modules.system.vm.leplvm.</tt><tt class="descname">ValueNode</tt><a class="reference internal" href="_modules/pyfrid/modules/system/vm/leplvm.html#ValueNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.vm.leplvm.ValueNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base node for the constants
+While processing returns the value transformed to the given type.
+Type can be any function of the form
+def type_(string):</p>
+<blockquote>
+<div>do_something
+and return</div></blockquote>
+<dl class="attribute">
+<dt id="pyfrid.modules.system.vm.leplvm.ValueNode.type_">
+<tt class="descname">type_</tt><a class="headerlink" href="#pyfrid.modules.system.vm.leplvm.ValueNode.type_" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">str</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="authentication-module">
+<h2>Authentication Module<a class="headerlink" href="#authentication-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pyfrid.modules.system.auth.core.auth">
+<span id="base-authentication-module-class-and-functions"></span><h3>Base Authentication Module class and functions<a class="headerlink" href="#module-pyfrid.modules.system.auth.core.auth" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="pyfrid.modules.system.auth.core.auth.BaseAuthModule">
+<em class="property">class </em><tt class="descclassname">pyfrid.modules.system.auth.core.auth.</tt><tt class="descname">BaseAuthModule</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/auth/core/auth.html#BaseAuthModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.auth.core.auth.BaseAuthModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is base class of authentication module. This module has functions for login and logout of a user, validating access of a user to
+objects presented in application. It also contains abstract methods for user creation and deleting.
+By default the authentication module has several useful signals:</p>
+<blockquote>
+<div><ul class="simple">
+<li>before_login_signal</li>
+<li>after_login_signal</li>
+<li>before_logout_signal</li>
+<li>after_logout_signal</li>
+</ul>
+</div></blockquote>
+<dl class="method">
+<dt id="pyfrid.modules.system.auth.core.auth.BaseAuthModule.add_user">
+<tt class="descname">add_user</tt><big>(</big><em>login</em>, <em>password</em>, <em>groups</em>, <em>name</em>, <em>email</em>, <em>organization</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/auth/core/auth.html#BaseAuthModule.add_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.auth.core.auth.BaseAuthModule.add_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract method which adds user. The information about users is kept
+in a different way depending on the type of authentication module.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.modules.system.auth.core.auth.BaseAuthModule.current_login">
+<tt class="descname">current_login</tt><a class="reference internal" href="_modules/pyfrid/modules/system/auth/core/auth.html#BaseAuthModule.current_login"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.auth.core.auth.BaseAuthModule.current_login" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns login of a currently logged in user or empty string</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.modules.system.auth.core.auth.BaseAuthModule.current_user">
+<tt class="descname">current_user</tt><a class="reference internal" href="_modules/pyfrid/modules/system/auth/core/auth.html#BaseAuthModule.current_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.auth.core.auth.BaseAuthModule.current_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <em>user</em> object from top of the stack (i.e. current user) or None if there is no user logged in.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.auth.core.auth.BaseAuthModule.del_user">
+<tt class="descname">del_user</tt><big>(</big><em>login</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/auth/core/auth.html#BaseAuthModule.del_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.auth.core.auth.BaseAuthModule.del_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract method which deletes user.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.modules.system.auth.core.auth.BaseAuthModule.groups">
+<tt class="descname">groups</tt><em class="property"> = {'GUEST': 30, 'ROOT': 0, 'ADVUSER': 10, 'USER': 20}</em><a class="headerlink" href="#pyfrid.modules.system.auth.core.auth.BaseAuthModule.groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>user groups and their weights. Groups with smaller are more powerful.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.auth.core.auth.BaseAuthModule.login">
+<tt class="descname">login</tt><big>(</big><em>login</em>, <em>password</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/auth/core/auth.html#BaseAuthModule.login"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.auth.core.auth.BaseAuthModule.login" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function first validates login and password and creates <em>User</em> object, which corresponds to them.
+If validation was successful and there is no current user in application, this user become the current one.
+If there is another user currently signed in and his group weight is smaller (he has more rights), login fails.
+If the current user has less rights then one which is trying to login, then new user is added to the top of the
+stack and become the current user. This function return true or False depending on the result of the login process.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.auth.core.auth.BaseAuthModule.logout">
+<tt class="descname">logout</tt><big>(</big><em>login</em>, <em>password</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/auth/core/auth.html#BaseAuthModule.logout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.auth.core.auth.BaseAuthModule.logout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a logout of a current user from application after validation of <em>login</em> and <em>password</em>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.modules.system.auth.core.auth.BaseAuthModule.noauth">
+<tt class="descname">noauth</tt><a class="reference internal" href="_modules/pyfrid/modules/system/auth/core/auth.html#BaseAuthModule.noauth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.auth.core.auth.BaseAuthModule.noauth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if authentication module doesn&#8217;t perform any login or logout.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.auth.core.auth.BaseAuthModule.status">
+<tt class="descname">status</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/auth/core/auth.html#BaseAuthModule.status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.auth.core.auth.BaseAuthModule.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Status handler with some information about a current user.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.auth.core.auth.BaseAuthModule.user_exists">
+<tt class="descname">user_exists</tt><big>(</big><em>login</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/auth/core/auth.html#BaseAuthModule.user_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.auth.core.auth.BaseAuthModule.user_exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if user with login <em>login</em> exists or False.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.auth.core.auth.BaseAuthModule.validate_access">
+<tt class="descname">validate_access</tt><big>(</big><em>getter</em>, <em>permission=''</em>, <em>exc=False</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/auth/core/auth.html#BaseAuthModule.validate_access"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.auth.core.auth.BaseAuthModule.validate_access" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function checks whether a current user has access to an object. The argument <em>getter</em> can be an object
+which has method <em>get_permission_groups</em> or a function which accepts <em>permission</em> as an argument and returns a list
+of user groups corresponding to <em>permission</em>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.auth.core.auth.BaseAuthModule.validate_user">
+<tt class="descname">validate_user</tt><big>(</big><em>login</em>, <em>password</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/auth/core/auth.html#BaseAuthModule.validate_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.auth.core.auth.BaseAuthModule.validate_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract method which checks <em>login</em> and <em>password</em> and returns a User object which corresponds to them.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyfrid.modules.system.auth.noauth">
+<span id="noauthentication-module-class-and-functions"></span><h3>NoAuthentication Module class and functions<a class="headerlink" href="#module-pyfrid.modules.system.auth.noauth" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="pyfrid.modules.system.auth.noauth.BaseNoAuthModule">
+<em class="property">class </em><tt class="descclassname">pyfrid.modules.system.auth.noauth.</tt><tt class="descname">BaseNoAuthModule</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/auth/noauth.html#BaseNoAuthModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.auth.noauth.BaseNoAuthModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is authentication module which doesn&#8217;t perform any login and logout and all access validations will return True.
+Use it if you don&#8217;t need any authentication control in your application.</p>
+<dl class="method">
+<dt id="pyfrid.modules.system.auth.noauth.BaseNoAuthModule.add_user">
+<tt class="descname">add_user</tt><big>(</big><em>login</em>, <em>password</em>, <em>groups</em>, <em>name</em>, <em>email</em>, <em>organization</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/auth/noauth.html#BaseNoAuthModule.add_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.auth.noauth.BaseNoAuthModule.add_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raises NotImplementedError.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.auth.noauth.BaseNoAuthModule.del_user">
+<tt class="descname">del_user</tt><big>(</big><em>login</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/auth/noauth.html#BaseNoAuthModule.del_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.auth.noauth.BaseNoAuthModule.del_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raises NotImplementedError.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.modules.system.auth.noauth.BaseNoAuthModule.noauth">
+<tt class="descname">noauth</tt><a class="reference internal" href="_modules/pyfrid/modules/system/auth/noauth.html#BaseNoAuthModule.noauth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.auth.noauth.BaseNoAuthModule.noauth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.auth.noauth.BaseNoAuthModule.user_exists">
+<tt class="descname">user_exists</tt><big>(</big><em>login</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/auth/noauth.html#BaseNoAuthModule.user_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.auth.noauth.BaseNoAuthModule.user_exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raises NotImplementedError.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.auth.noauth.BaseNoAuthModule.validate_access">
+<tt class="descname">validate_access</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/auth/noauth.html#BaseNoAuthModule.validate_access"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.auth.noauth.BaseNoAuthModule.validate_access" title="Permalink to this definition">¶</a></dt>
+<dd><p>Always returns True</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.modules.system.auth.noauth.BaseNoAuthModule.validate_user">
+<tt class="descname">validate_user</tt><big>(</big><em>login</em>, <em>password</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/auth/noauth.html#BaseNoAuthModule.validate_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.auth.noauth.BaseNoAuthModule.validate_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns empty user.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyfrid.modules.system.auth.yamlauth">
+<span id="yaml-authentication-module-class-and-functions"></span><h3>Yaml Authentication Module class and functions<a class="headerlink" href="#module-pyfrid.modules.system.auth.yamlauth" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="pyfrid.modules.system.auth.yamlauth.BaseYamlAuthModule">
+<em class="property">class </em><tt class="descclassname">pyfrid.modules.system.auth.yamlauth.</tt><tt class="descname">BaseYamlAuthModule</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/auth/yamlauth.html#BaseYamlAuthModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.auth.yamlauth.BaseYamlAuthModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a simple authentication module which uses YAML file to keep information about users and their login and passwords.
+Passwords a encoded with sha224 algorithm.</p>
+<dl class="attribute">
+<dt id="pyfrid.modules.system.auth.yamlauth.BaseYamlAuthModule.dbpath">
+<tt class="descname">dbpath</tt><a class="headerlink" href="#pyfrid.modules.system.auth.yamlauth.BaseYamlAuthModule.dbpath" title="Permalink to this definition">¶</a></dt>
+<dd><p>path to YAML file with users information</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="logger-module">
+<h2>Logger Module<a class="headerlink" href="#logger-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pyfrid.modules.system.logger">
+<span id="base-logger-module-class-and-functions"></span><h3>Base Logger Module class and functions<a class="headerlink" href="#module-pyfrid.modules.system.logger" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="pyfrid.modules.system.logger.BaseLoggerModule">
+<em class="property">class </em><tt class="descclassname">pyfrid.modules.system.logger.</tt><tt class="descname">BaseLoggerModule</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyfrid/modules/system/logger.html#BaseLoggerModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.modules.system.logger.BaseLoggerModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is base logger module, system module which manages logging messages of your application.
+It is based on the standard python logging module, where log messages are emitted by handlers.
+PyFRID logger supports by default logging to stdout, file and email.</p>
+<dl class="attribute">
+<dt id="pyfrid.modules.system.logger.BaseLoggerModule.debugmode">
+<tt class="descname">debugmode</tt><a class="headerlink" href="#pyfrid.modules.system.logger.BaseLoggerModule.debugmode" title="Permalink to this definition">¶</a></dt>
+<dd><p>boolean fixed setting for switching on/off debugging mode</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.modules.system.logger.BaseLoggerModule.email_log">
+<tt class="descname">email_log</tt><a class="headerlink" href="#pyfrid.modules.system.logger.BaseLoggerModule.email_log" title="Permalink to this definition">¶</a></dt>
+<dd><p>boolean fixed setting for switching on/off logging to email of a current user</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.modules.system.logger.BaseLoggerModule.file_log">
+<tt class="descname">file_log</tt><a class="headerlink" href="#pyfrid.modules.system.logger.BaseLoggerModule.file_log" title="Permalink to this definition">¶</a></dt>
+<dd><p>boolean fixed setting for switching on/off logging to a log file</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.modules.system.logger.BaseLoggerModule.logdir">
+<tt class="descname">logdir</tt><a class="headerlink" href="#pyfrid.modules.system.logger.BaseLoggerModule.logdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>string fixed setting for the path to a directory with log file</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.modules.system.logger.BaseLoggerModule.smtp_from">
+<tt class="descname">smtp_from</tt><a class="headerlink" href="#pyfrid.modules.system.logger.BaseLoggerModule.smtp_from" title="Permalink to this definition">¶</a></dt>
+<dd><p>string setting for the <em>from</em> email.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.modules.system.logger.BaseLoggerModule.smtp_host">
+<tt class="descname">smtp_host</tt><a class="headerlink" href="#pyfrid.modules.system.logger.BaseLoggerModule.smtp_host" title="Permalink to this definition">¶</a></dt>
+<dd><p>string setting for the smtp host. It is used for the logging to email.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.modules.system.logger.BaseLoggerModule.smtp_pass">
+<tt class="descname">smtp_pass</tt><a class="headerlink" href="#pyfrid.modules.system.logger.BaseLoggerModule.smtp_pass" title="Permalink to this definition">¶</a></dt>
+<dd><p>string setting for the smtp password.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.modules.system.logger.BaseLoggerModule.smtp_port">
+<tt class="descname">smtp_port</tt><a class="headerlink" href="#pyfrid.modules.system.logger.BaseLoggerModule.smtp_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>integer setting for the smtp port.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.modules.system.logger.BaseLoggerModule.smtp_secure">
+<tt class="descname">smtp_secure</tt><a class="headerlink" href="#pyfrid.modules.system.logger.BaseLoggerModule.smtp_secure" title="Permalink to this definition">¶</a></dt>
+<dd><p>string setting for the smtp secure type.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.modules.system.logger.BaseLoggerModule.smtp_user">
+<tt class="descname">smtp_user</tt><a class="headerlink" href="#pyfrid.modules.system.logger.BaseLoggerModule.smtp_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>string setting for the smtp user.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.modules.system.logger.BaseLoggerModule.stdout_log">
+<tt class="descname">stdout_log</tt><a class="headerlink" href="#pyfrid.modules.system.logger.BaseLoggerModule.stdout_log" title="Permalink to this definition">¶</a></dt>
+<dd><p>boolean fixed setting for switching on/off logging to standard output</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">System modules</a><ul>
+<li><a class="reference internal" href="#base-system-module">Base System Module</a><ul>
+<li><a class="reference internal" href="#module-pyfrid.core.sysmod">System Module class and functions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#application-module">Application Module</a><ul>
+<li><a class="reference internal" href="#module-pyfrid.modules.system.app">Application Module class and functions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#virtual-machine-module">Virtual Machine Module</a><ul>
+<li><a class="reference internal" href="#module-pyfrid.modules.system.vm.core.vm">Base Virtual Machine Module class and functions</a></li>
+<li><a class="reference internal" href="#module-pyfrid.modules.system.vm.leplvm">Lepl Virtual Machine Module class and functions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#authentication-module">Authentication Module</a><ul>
+<li><a class="reference internal" href="#module-pyfrid.modules.system.auth.core.auth">Base Authentication Module class and functions</a></li>
+<li><a class="reference internal" href="#module-pyfrid.modules.system.auth.noauth">NoAuthentication Module class and functions</a></li>
+<li><a class="reference internal" href="#module-pyfrid.modules.system.auth.yamlauth">Yaml Authentication Module class and functions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#logger-module">Logger Module</a><ul>
+<li><a class="reference internal" href="#module-pyfrid.modules.system.logger">Base Logger Module class and functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="module.html"
+                        title="previous chapter">Modules</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="module.html" title="Modules"
+             >previous</a> |</li>
+        <li><a href="index.html">Pyfrid 0.1.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Denis Korolkov.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

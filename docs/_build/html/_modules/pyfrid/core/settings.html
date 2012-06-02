@@ -1,0 +1,335 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyfrid.core.settings &mdash; Pyfrid 0.1.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/pyramid.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Pyfrid 0.1.1 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="../../../_static/ie6.css" type="text/css" media="screen" charset="utf-8" />
+<![endif]-->
+
+  </head>
+  <body>
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Pyfrid 0.1.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pyfrid.core.settings</h1><div class="highlight"><pre>
+<span class="c">#    This file is part of PyFRID.</span>
+<span class="c">#</span>
+<span class="c">#    PyFRID is free software: you can redistribute it and/or modify</span>
+<span class="c">#    it under the terms of the GNU General Public License as published by</span>
+<span class="c">#    the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c">#    (at your option) any later version.</span>
+<span class="c">#</span>
+<span class="c">#    PyFRID is distributed in the hope that it will be useful,</span>
+<span class="c">#    but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c">#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c">#    GNU General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c">#    You should have received a copy of the GNU General Public License</span>
+<span class="c">#    along with PyFRID.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="c">#</span>
+
+<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">IntType</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">,</span> <span class="n">BooleanType</span><span class="p">,</span> <span class="n">StringType</span><span class="p">,</span> <span class="n">UnicodeType</span><span class="p">,</span> <span class="n">ListType</span><span class="p">,</span> <span class="n">NoneType</span>
+<span class="kn">from</span> <span class="nn">pyfrid.core.descriptor</span> <span class="kn">import</span> <span class="n">BaseDescriptor</span>
+
+<span class="k">class</span> <span class="nc">SettingError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span> <span class="k">pass</span>
+
+<div class="viewcode-block" id="BaseSetting"><a class="viewcode-back" href="../../../settings.html#pyfrid.core.settings.BaseSetting">[docs]</a><span class="k">class</span> <span class="nc">BaseSetting</span><span class="p">(</span><span class="n">BaseDescriptor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Main class for all settings</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">setting_types</span><span class="o">=</span><span class="bp">None</span>
+    <span class="n">typename</span><span class="o">=</span><span class="s">&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">getter</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">setter</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">docs</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">expected</span><span class="o">=</span><span class="p">[],</span> <span class="n">limits</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">],</span> <span class="n">fixed</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">allownone</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BaseSetting</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">setting_types</span><span class="o">!=</span><span class="bp">None</span><span class="p">,</span> <span class="s">&quot;setting_type is None&quot;</span>
+        <span class="k">assert</span> <span class="n">getter</span><span class="o">==</span><span class="bp">None</span> <span class="ow">or</span> <span class="nb">callable</span><span class="p">(</span><span class="n">getter</span><span class="p">),</span> <span class="s">&quot;getter must be callable or None&quot;</span>
+        <span class="k">assert</span> <span class="n">setter</span><span class="o">==</span><span class="bp">None</span> <span class="ow">or</span> <span class="nb">callable</span><span class="p">(</span><span class="n">setter</span><span class="p">),</span> <span class="s">&quot;setter must be callable or None&quot;</span>
+        <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">expected</span><span class="p">)</span><span class="o">==</span><span class="n">ListType</span><span class="p">,</span> <span class="s">&quot;Expected values list can have only a list type&quot;</span>
+        <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">limits</span><span class="p">)</span><span class="o">==</span><span class="n">ListType</span><span class="p">,</span> <span class="s">&quot;limits can have only a list type&quot;</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">limits</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">,</span> <span class="s">&quot;limits must be array with two value&quot;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="o">=</span><span class="n">limits</span>
+        
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">setting_types</span><span class="p">)</span><span class="o">!=</span><span class="n">ListType</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setting_types</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">setting_types</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">allownone</span> <span class="ow">and</span> <span class="n">NoneType</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">setting_types</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setting_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">NoneType</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_limits</span><span class="p">(</span><span class="n">limits</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_expected</span><span class="p">(</span><span class="n">expected</span><span class="p">)</span>
+               
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initmode</span><span class="o">=</span><span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_getter</span><span class="o">=</span><span class="n">getter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setter</span><span class="o">=</span><span class="n">setter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_units</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">units</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_docs</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_defvalue</span><span class="o">=</span><span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fixed</span><span class="o">=</span><span class="nb">bool</span><span class="p">(</span><span class="n">fixed</span><span class="p">)</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_expected</span><span class="o">=</span><span class="n">expected</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="o">=</span><span class="nb">dict</span><span class="p">()</span>
+        
+    <span class="k">def</span> <span class="nf">validate_expected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expected</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">expected</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">setting_types</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;expected list type mismatch for value &#39;{0}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">))</span> 
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">!=</span><span class="bp">None</span> <span class="ow">and</span> <span class="n">item</span><span class="o">&lt;</span><span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;value &#39;{0}&#39; is out of limits [{1}, {2}]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">!=</span><span class="bp">None</span> <span class="ow">and</span> <span class="n">item</span><span class="o">&gt;</span><span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;value &#39;{0}&#39; is out of limits [{1}, {2}]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">))</span>  
+                 
+    <span class="k">def</span> <span class="nf">validate_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limits</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">!=</span><span class="n">NoneType</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">setting_types</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;lower limit type mismatch for value &#39;{0}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">!=</span><span class="n">NoneType</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">setting_types</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;upper limit type mismatch for value &#39;{0}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">!=</span><span class="bp">None</span> <span class="ow">and</span> <span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">!=</span><span class="bp">None</span> <span class="ow">and</span> <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">&gt;</span><span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;lower limit is larger then upper limit&quot;</span><span class="p">)</span>
+                          
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">units</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_units</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">docs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_docs</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">fixed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fixed</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">expected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expected</span><span class="p">[:]</span>
+    
+    <span class="k">def</span> <span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">permissions</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">instance</span><span class="o">.</span><span class="n">alias</span><span class="p">:</span> 
+            <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;Instance with empty alias&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">permissions</span>   <span class="o">==</span><span class="bp">None</span><span class="p">:</span> <span class="n">permissions</span><span class="o">=</span><span class="p">{}</span>
+        <span class="k">if</span> <span class="n">default_value</span> <span class="o">==</span><span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_defvalue</span><span class="p">):</span>
+                <span class="n">default_value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_defvalue</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">default_value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_defvalue</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">default_value</span><span class="p">)</span>    
+        <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">[</span><span class="n">instance</span><span class="o">.</span><span class="n">alias</span><span class="p">]</span><span class="o">=</span><span class="p">{</span>
+                                        <span class="s">&quot;default_value&quot;</span><span class="p">:</span><span class="n">default_value</span><span class="p">,</span>
+                                        <span class="s">&quot;permissions&quot;</span><span class="p">:</span><span class="n">permissions</span><span class="p">,</span>
+                                        <span class="s">&quot;value&quot;</span><span class="p">:</span><span class="bp">None</span>
+                                        <span class="p">}</span>
+        
+    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initmode</span><span class="o">=</span><span class="bp">True</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">instance</span><span class="o">.</span><span class="n">alias</span><span class="p">:</span> 
+                <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;Instance with empty alias&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">instance</span><span class="o">.</span><span class="n">alias</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;The setting has not been configured yet&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__set__</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">[</span><span class="n">instance</span><span class="o">.</span><span class="n">alias</span><span class="p">][</span><span class="s">&quot;default_value&quot;</span><span class="p">])</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_initmode</span><span class="o">=</span><span class="bp">False</span>
+                
+    <span class="k">def</span> <span class="nf">get_permission_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">instance</span><span class="p">,</span><span class="n">perm</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">instance</span><span class="o">.</span><span class="n">alias</span><span class="p">:</span> 
+            <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;Instance with empty alias&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">[</span><span class="n">instance</span><span class="o">.</span><span class="n">alias</span><span class="p">][</span><span class="s">&quot;permissions&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">perm</span><span class="p">,[])</span>
+        
+    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">instance</span><span class="o">==</span><span class="bp">None</span><span class="p">:</span> <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">assert</span> <span class="n">instance</span><span class="o">.</span><span class="n">alias</span><span class="p">,</span> <span class="s">&quot;Instance with empty alias&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getter</span><span class="o">!=</span><span class="bp">None</span><span class="p">:</span>
+            <span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_getter</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">[</span><span class="n">instance</span><span class="o">.</span><span class="n">alias</span><span class="p">][</span><span class="s">&quot;value&quot;</span><span class="p">]</span>
+    
+    <span class="k">def</span> <span class="nf">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">instance</span><span class="o">==</span><span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s">&quot;can not set setting value without instance&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">instance</span><span class="o">.</span><span class="n">alias</span><span class="p">:</span> 
+            <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;Instance with empty alias&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_setter</span><span class="o">!=</span><span class="bp">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getter</span><span class="o">!=</span><span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_setter</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">[</span><span class="n">instance</span><span class="o">.</span><span class="n">alias</span><span class="p">][</span><span class="s">&quot;value&quot;</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_setter</span><span class="o">!=</span><span class="bp">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getter</span><span class="o">==</span><span class="bp">None</span><span class="p">:</span>
+            <span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_setter</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">[</span><span class="n">instance</span><span class="o">.</span><span class="n">alias</span><span class="p">][</span><span class="s">&quot;value&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">[</span><span class="n">instance</span><span class="o">.</span><span class="n">alias</span><span class="p">][</span><span class="s">&quot;value&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">value</span>
+                                                    
+    <span class="k">def</span> <span class="nf">validate_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">!=</span><span class="bp">None</span> <span class="ow">and</span> <span class="n">value</span><span class="o">&lt;</span><span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;value &#39;{0}&#39; is out of limits [{1}, {2}]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">!=</span><span class="bp">None</span> <span class="ow">and</span> <span class="n">value</span><span class="o">&gt;</span><span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;value &#39;{0}&#39; is out of limits [{1}, {2}]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">))</span>    
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expected</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expected</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;value &#39;{0}&#39; is  not in expected values&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        
+    <span class="k">def</span> <span class="nf">validate_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">setting_types</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;type mismatch for value &#39;{0}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>  
+                      </div>
+<span class="k">class</span> <span class="nc">IntSetting</span><span class="p">(</span><span class="n">BaseSetting</span><span class="p">):</span>       
+    <span class="n">setting_types</span><span class="o">=</span><span class="n">IntType</span>
+    <span class="n">typename</span><span class="o">=</span><span class="s">&quot;int&quot;</span>
+            
+<span class="k">class</span> <span class="nc">FloatSetting</span><span class="p">(</span><span class="n">BaseSetting</span><span class="p">):</span>        
+    <span class="n">setting_types</span><span class="o">=</span><span class="p">[</span><span class="n">FloatType</span><span class="p">,</span> <span class="n">IntType</span><span class="p">]</span>
+    <span class="n">typename</span><span class="o">=</span><span class="s">&quot;float&quot;</span>
+
+<span class="k">class</span> <span class="nc">StringSetting</span><span class="p">(</span><span class="n">BaseSetting</span><span class="p">):</span>        
+    <span class="n">setting_types</span><span class="o">=</span><span class="p">[</span><span class="n">StringType</span><span class="p">,</span> <span class="n">UnicodeType</span><span class="p">]</span>
+    <span class="n">typename</span><span class="o">=</span><span class="s">&quot;string&quot;</span>
+
+<span class="k">class</span> <span class="nc">BoolSetting</span><span class="p">(</span><span class="n">BaseSetting</span><span class="p">):</span>        
+    <span class="n">setting_types</span><span class="o">=</span><span class="p">[</span><span class="n">BooleanType</span><span class="p">,</span> <span class="n">IntType</span><span class="p">]</span>
+    <span class="n">typename</span><span class="o">=</span><span class="s">&quot;boolean&quot;</span>
+    
+<span class="k">class</span> <span class="nc">BaseListSetting</span><span class="p">(</span><span class="n">BaseSetting</span><span class="p">):</span>
+    <span class="n">setting_types</span><span class="o">=</span><span class="n">ListType</span>
+    <span class="n">item_types</span><span class="o">=</span><span class="bp">None</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">getter</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">setter</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">docs</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">expected</span><span class="o">=</span><span class="p">[],</span> <span class="n">limits</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">],</span> <span class="n">fixed</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">allownone</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">maxitems</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BaseListSetting</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">getter</span><span class="p">,</span> <span class="n">setter</span><span class="p">,</span> <span class="n">units</span><span class="p">,</span> <span class="n">docs</span><span class="p">,</span> <span class="n">expected</span><span class="p">,</span> <span class="n">limits</span><span class="p">,</span> <span class="n">fixed</span><span class="p">,</span> <span class="n">allownone</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_types</span><span class="o">!=</span><span class="bp">None</span><span class="p">,</span> <span class="s">&quot;item type is None&quot;</span>
+        <span class="k">assert</span> <span class="n">maxitems</span><span class="o">==</span><span class="bp">None</span> <span class="ow">or</span> <span class="n">maxitems</span><span class="o">!=</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">maxitems</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">,</span> <span class="s">&quot;maxitems &lt;= zero&quot;</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">item_types</span><span class="p">)</span><span class="o">!=</span><span class="n">ListType</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">item_types</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">item_types</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">allownone</span> <span class="ow">and</span> <span class="n">NoneType</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_types</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">item_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">NoneType</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_maxitems</span><span class="o">=</span><span class="n">maxitems</span>
+    
+    <span class="k">def</span> <span class="nf">validate_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BaseListSetting</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">validate_type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_types</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;type mismatch for value &#39;{0}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+            
+    <span class="k">def</span> <span class="nf">validate_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_maxitems</span><span class="o">!=</span><span class="bp">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_maxitems</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;length of the value is larger them maxitems&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">BaseListSetting</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">validate_value</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">validate_expected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expected</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">expected</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_types</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;expected list type mismatch for value &#39;{0}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">))</span> 
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">!=</span><span class="bp">None</span> <span class="ow">and</span> <span class="n">item</span><span class="o">&lt;</span><span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;value &#39;{0}&#39; is out of limits [{1}, {2}]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">!=</span><span class="bp">None</span> <span class="ow">and</span> <span class="n">item</span><span class="o">&gt;</span><span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;value &#39;{0}&#39; is out of limits [{1}, {2}]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">))</span>  
+                 
+    <span class="k">def</span> <span class="nf">validate_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limits</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">!=</span><span class="n">NoneType</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_types</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;lower limit type mismatch for value &#39;{0}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">!=</span><span class="n">NoneType</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_types</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;upper limit type mismatch for value &#39;{0}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">!=</span><span class="bp">None</span> <span class="ow">and</span> <span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">!=</span><span class="bp">None</span> <span class="ow">and</span> <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">&gt;</span><span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;lower limit is larger then upper limit&quot;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">BoolListSetting</span><span class="p">(</span><span class="n">BaseListSetting</span><span class="p">):</span>        
+    <span class="n">item_types</span><span class="o">=</span><span class="n">BooleanType</span>
+   
+<span class="k">class</span> <span class="nc">IntListSetting</span><span class="p">(</span><span class="n">BaseListSetting</span><span class="p">):</span>        
+    <span class="n">item_types</span><span class="o">=</span><span class="n">IntType</span>
+         
+<span class="k">class</span> <span class="nc">FloatListSetting</span><span class="p">(</span><span class="n">BaseListSetting</span><span class="p">):</span>        
+    <span class="n">item_types</span><span class="o">=</span><span class="p">[</span><span class="n">FloatType</span><span class="p">,</span> <span class="n">IntType</span><span class="p">]</span>
+
+<span class="k">class</span> <span class="nc">StringListSetting</span><span class="p">(</span><span class="n">BaseListSetting</span><span class="p">):</span>        
+    <span class="n">item_types</span><span class="o">=</span><span class="n">StringType</span>
+            
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Pyfrid 0.1.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Denis Korolkov.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
