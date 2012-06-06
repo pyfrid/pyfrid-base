@@ -212,7 +212,7 @@ class BaseThreadedCommand(BaseCommand):
     def runtime(self,*args):
         arguments=[(args[i],args[i+1:i+self.numbaseargs] if self.numbaseargs>1 else []) for i in range(0,len(args),self.numbaseargs)]
         res=[self.call_each_runtime(arg[0],*arg[1]) for arg in arguments]
-        return sum(res)
+        return max(res)
     
     def grammar(self):
         from pyfrid.modules.system.vm.leplvm import OBJECT

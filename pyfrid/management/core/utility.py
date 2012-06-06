@@ -29,21 +29,23 @@ class ManagementUtility(object):
         self.argv=argv
         self.prog_name = os.path.basename(self.argv[0])
         self.registry=registry
-        sys.path.insert(0,commands_path)
-        try:
-            cmdlist=[f[:-3] for f in os.listdir(commands_path)
-                if not f.startswith('.') and f!="__init__.py" and f.endswith('.py')]
-            for cmd in cmdlist:
-                __import__(cmd)
-        except ImportError:
-            sys.stderr.write("Error while importing module '{0}' from path {1}\n".format(cmd,commands_path))
-            traceback.print_exc()
-            sys.exit(1)
-        except RegistryError:
-            sys.stderr.write("Error while registering command from module '{0}' from path {1}\n".format(cmd,commands_path))
-            sys.exit(1)
-        finally:
-            del sys.path[0]
+        for path_ in commands_path:
+            if os.path.exists(path_):
+                sys.path.insert(0,path_)
+                try:
+                    cmdlist=[f[:-3] for f in os.listdir(path_)
+                        if not f.startswith('.') and f!="__init__.py" and f.endswith('.py')]
+                    for cmd in cmdlist:
+                        __import__(cmd)
+                except ImportError:
+                    sys.stderr.write("Error while importing module '{0}' from path {1}\n".format(cmd,path_))
+                    traceback.print_exc()
+                    sys.exit(1)
+                except RegistryError:
+                    sys.stderr.write("Error while registering command from module '{0}' from path {1}\n".format(cmd,path_))
+                    sys.exit(1)
+                finally:
+                    del sys.path[0]
             
     def print_help(self):
         """
@@ -83,10 +85,12 @@ class ManagementUtility(object):
         cmdobj(arguments)
                        
 def execute_admin(argv):
-    utility = ManagementUtility(argv,os.path.join(pyfrid.__path__[0],'management','commands','admin'),admin_registry)
+    command_paths=[os.path.join(path_,'management','commands','admin') for path_ in pyfrid.__path__]
+    utility = ManagementUtility(argv,command_paths,admin_registry)
     utility.execute()
 
 def execute_manager(argv):
-    utility = ManagementUtility(argv,os.path.join(pyfrid.__path__[0],'management','commands','project'),project_registry)
+    command_paths=[os.path.join(path_,'management','commands','project') for path_ in pyfrid.__path__]
+    utility = ManagementUtility(argv,command_paths,project_registry)
     utility.execute()
     

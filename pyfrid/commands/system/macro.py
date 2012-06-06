@@ -69,8 +69,8 @@ class BaseMacroCommand(BaseCommand):
         super(BaseMacroCommand, self).__init__(*args, **kwargs)
         self._macropath=self.macrodir
         
-        self.app.auth_module.after_login_signal.connect(self.on_auth_slot)
-        self.app.auth_module.after_logout_signal.connect(self.on_auth_slot)
+        self.app.auth_module.after_login_signal.connect  (self.on_auth_slot)
+        self.app.auth_module.after_logout_signal.connect (self.on_auth_slot)
     
     @property
     def macropath(self):
@@ -90,6 +90,8 @@ class BaseMacroCommand(BaseCommand):
             self._macropath=path
     
     def setmaindir(self, directory):
+        if not directory:
+            directory=os.path.join(self.app.projpath,"macro")
         macrodir=os.path.abspath(directory)
         try:
             if not os.path.exists(macrodir):
@@ -114,5 +116,5 @@ class BaseMacroCommand(BaseCommand):
     def validate(self, *args, **kwargs):
         return True
                        
-    macrodir=StringSetting("./macro", fixed=True, setter=setmaindir)
+    macrodir=StringSetting("", fixed=True, setter=setmaindir)
     

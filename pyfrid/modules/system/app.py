@@ -65,7 +65,6 @@ class BaseApplicationModule(BaseSystemModule):
             obj=self.app.command_manager.create_object(command_registry[alias], self, permissions, settings)
             connect_to_logger(self.logger_module, obj)
                 
-                      
     def initialize(self):
         """Initialization handler. It iterates over all devices, modules and commands and calls *initialize* handler of each object.""" 
         for _, obj in self.iterate_devices():
@@ -83,6 +82,8 @@ class BaseApplicationModule(BaseSystemModule):
             obj.call_shutdown()
         for _, obj in self.iterate_devices():
             obj.call_shutdown()
+        self._execpool._delete_workers()
+        self._stoppool._delete_workers()
             
     def stop(self):
         """
@@ -98,7 +99,7 @@ class BaseApplicationModule(BaseSystemModule):
                 obj.call_stop()
             for _,obj in app.iterate_devices():
                 obj.call_stop()
-        self._execpool.add_task(task, self)  
+        self._stoppool.add_task(task, self)  
 
     def release(self):
         """Release handler. It iterates over all devices, modules and commands and calls *release* handler of each object.
@@ -285,7 +286,7 @@ class BaseApplicationModule(BaseSystemModule):
         """Status handler for application module. By default it shows number of devices, commands and modules in application"""
         return (("Devices", len(self.app.device_manager), ""),
                 ("Modules", len(self.app.module_manager), ""),
-                ("Commands", len(self.app.module_manager), ""))    
+                ("Commands", len(self.app.command_manager), ""))    
         
     @property
     def projname(self):

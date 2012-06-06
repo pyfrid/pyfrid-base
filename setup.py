@@ -64,10 +64,10 @@ setup(
         'Topic :: Utilities',
     ],
     platforms='any',
-    packages=find_packages(exclude=['scripts']),
+    packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'pyfrid-admin = scripts:main'
+            'pyfrid-admin = pyfrid.scripts.admin:main'
         ]
     },
     install_requires=requires,

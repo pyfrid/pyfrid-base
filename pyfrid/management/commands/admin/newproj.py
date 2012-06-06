@@ -14,10 +14,13 @@
 
 
 import os
+import shutil
 
 import pyfrid
 from pyfrid.management.core.admin import BaseAdminCommand
 from pyfrid.management.core.command import CommandError
+from pyfrid.utils import copytree
+
 
 class NewProjectCommand(BaseAdminCommand):
     
@@ -42,13 +45,12 @@ class NewProjectCommand(BaseAdminCommand):
         if not re.search(r'^[_a-zA-Z]\w*$', proj_name):
             raise CommandError("{0} is not a valid project name. Please use only numbers, letters and underscores".format(proj_name))
         directory = os.getcwd()
-        top_dir = os.path.join(directory, proj_name)
-        if os.path.exists(top_dir):
-            raise CommandError("Directory '{0}' already exists".format(top_dir))
-        template_dir = os.path.join(pyfrid.__path__[0], "management",'templates', 'project_template')
-        try:
-            shutil.copytree(template_dir,top_dir,ignore=shutil.ignore_patterns('*.pyc', '*.pyd'))
-        except OSError,e:
-            raise CommandError(e)
+        dst_dir = os.path.join(directory, proj_name)
+        if os.path.exists(dst_dir):
+            raise CommandError("Directory '{0}' already exists".format(dst_dir))
+        for pyfrid_path in pyfrid.__path__:
+            src_dir = os.path.join(pyfrid_path, "management",'templates', 'project_template')
+            if os.path.exists(src_dir):
+                copytree(src_dir,dst_dir)
         return "Project '{0}' was successfully created".format(proj_name)
     

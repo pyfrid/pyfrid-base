@@ -89,15 +89,13 @@ class BaseCommand(object):
 
     def execute(self, *args, **options):
         try:
-            stdout = options.get('stdout', sys.stdout)
-            stderr = options.get('stderr', sys.stderr)
             output = self.handle(*args, **options)
-            if output: stdout.write("{0}\n".format(output))
-        except CommandError, e:
-            stderr.write("{0}\n".format(str(e)))
+            if output: self.info(output)
+        except CommandError, err:
+            self.error(err)
             sys.exit(1)
         except Exception, err:
-            stderr.write("{0}\n".format(str(err)))
+            self.error(err)
             traceback.print_exc()
             sys.exit(1)
             
@@ -107,6 +105,12 @@ class BaseCommand(object):
         this method.
         """
         pass
+    
+    def info(self, msg):
+        sys.stdout.write("{0}\n".format(str(msg)))
+        
+    def error(self, msg):
+        sys.stderr.write("{0}\n".format(str(msg)))
     
 
     

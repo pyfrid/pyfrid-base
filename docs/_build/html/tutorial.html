@@ -62,10 +62,10 @@
             
   <div class="section" id="tutorial">
 <h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
-<p>PyFRID as a framework comes with a set of tools to make your life a bit easier.
+<p>PyFRID comes with a set of tools to make your life a bit easier.
 These tools are split into two categories: administration tools and application related tools.</p>
-<p>The administration tools are executed by the script <strong class="program">pyfrid-admin command_name</strong>
-and the application related tools are called as <strong class="program">python appname command_name</strong>,
+<p>The administration tools are executed by the script <strong class="program">pyfrid-admin command_name [options]</strong>
+and the application related tools are called as <strong class="program">python appname command_name [options]</strong>,
 where <em>appname</em> and <em>command_name</em> are names of your application and a command which
 you would like to execute.</p>
 <div class="section" id="creating-a-project">
@@ -83,7 +83,7 @@ If your project was created succesfully you will see the following message:</p>
 <p>The default application contains the most important commands and few dummy devices.
 It doesn&#8217;t do anything useful, but it is certainly enough to play with and to get a feeling of
 how it works.
-Outside the root directory of your project run:</p>
+In the same directory where you have executed previous command run:</p>
 <div class="highlight-python"><pre>$ python your_app_name cmdline</pre>
 </div>
 <p>You will see something like this:</p>
@@ -115,24 +115,140 @@ for the command parameters.</p>
 <p>If you have installed package with web application you can run it by:</p>
 <div class="highlight-python"><pre>$ python your_app_name webapp</pre>
 </div>
-<p>This command will start the web server. The GUI can be accessed with your browser.</p>
+<p>This command will start the web server and you will be able to access your application via Web browser.</p>
+<p>In the following sections we will consider how to add new commands, devices and modules to your application.</p>
 </div>
 <div class="section" id="creating-new-command">
 <h2>Creating new command<a class="headerlink" href="#creating-new-command" title="Permalink to this headline">¶</a></h2>
-<p>To create new command:</p>
-<div class="highlight-python"><pre>$ python your_app_name newcmd your_command_name</pre>
+<p>Pyfrid has a special management tool which is called <em>newcmd</em>. This tool does few things: it creates  a default configuration
+for your new command from the template and source python file with a default implementation of the command class.</p>
+<p>For example we would like to create a new command with name <em>pause</em>, which will pause running script for a given amount of seconds.
+Simply run:</p>
+<div class="highlight-python"><pre>$ python your_app_name newcmd pause</pre>
+</div>
+<p>Change your current directory to:</p>
+<div class="highlight-python"><pre>$ cd your_app_name/config</pre>
+</div>
+<p>In the end of <em>commands.yml</em> file you will find a default configuration for the command <em>pause</em>:</p>
+<div class="highlight-python"><pre>---
+alias: pause
+name: pause
+active: True</pre>
+</div>
+<p>where &#8220;&#8212;&#8221; is a separator between configurations for commands presented in your application,
+<em>alias</em> is a special internal name of this command which is used by PyFRID as identificator of this command,
+<em>name</em> is a name which user will use to call this command and
+<em>active</em> is a flag for the command activation or deactivation (needs restart of application)</p>
+<p>Now let&#8217;s have a look on source code of the newly created command, change the current directory to:</p>
+<div class="highlight-python"><pre>$ cd your_app_name/commands</pre>
+</div>
+<p>and open the file <em>pause.py</em> with your favorite editor:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyfrid.core</span> <span class="kn">import</span> <span class="n">BaseCommand</span>
+
+<span class="k">class</span> <span class="nc">PauseCommand</span><span class="p">(</span><span class="n">BaseCommand</span><span class="p">):</span>
+
+    <span class="n">alias</span><span class="o">=</span><span class="s">&quot;pause&quot;</span>
+
+    <span class="n">descr</span><span class="o">=</span><span class="s">&quot;Type here a description...&quot;</span>
+
+    <span class="k">def</span> <span class="nf">grammar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">PauseCommand</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">grammar</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">PauseCommand</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">PauseCommand</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">runtime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">PauseCommand</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">runtime</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <em>PauseCommand</em> class inherites attributes and behavior from pre-existing base classes <em>BaseCommand</em> which is a part of PyFRID.
+<em>alias</em> is the most important attribute of any class in application. It plays a role of identificator of a command, device or module.
+Alias must be chosen only once, especially for a command, because it can be used in the application code. In the next section you will
+see how commands aliases are used to define a functionality of devices.</p>
+<p>Method <em>grammar</em> returns a tuple <em>([arg1, arg2], minrep, maxrep)</em>, where <em>arg1</em> and <em>arg2</em> are types of a command arguments, <em>minrep</em> and
+<em>maxrep</em> are minimum and maximum number of repetitions of arguments, repectively. All parameters of the tuple can be <em>None</em>, this is  default
+value returned by the <em>grammar</em> method in <em>BaseCommand</em> class.</p>
+<p>Our new <em>pause</em> command will accept one parameter of type float and the code of <em>grammar</em> method become:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">grammar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">pyfrid.modules.system.vm.leplvm</span> <span class="kn">import</span> <span class="n">FLOATCONST</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">FLOATCONST</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>where <em>FLOATCONST</em> is a grammar rule imported from the <em>virtual machine</em> module.
+Other grammars and their descriptions you will find there too.</p>
+<p>The next important method of a command is <em>execute</em>. One expects the <em>pause</em> command to inform  user that it is going to sleep
+for some time, then their must be a code for &#8220;sleeping&#8221; and in the end the command will inform  user that sleeping is finished and it wakes up:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Going to sleep for {0} sec...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+  <span class="n">start</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+  <span class="k">while</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">start</span><span class="o">&lt;</span><span class="n">val</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">stopped</span><span class="p">:</span> <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.02</span><span class="p">)</span>
+  <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Waking up...&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Instead of standard <em>sleep</em> method from the <em>time</em> module, it is wise to use a while loop with short time pauses, because there is no simple way to interrupt
+the standard &#8220;sleeping&#8221;.</p>
+<p>The <em>validate</em> method is used to make additional check of the parameters. For example, one can implement a check for the time limits.
+This method must return <em>True</em> or <em>False</em> depending on the result of validation.</p>
+<p>The <em>runtime</em> method returns an estimated running time of the command. In the case of the <em>pause</em> command the running time is simply the <em>time</em> argument:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">runtime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tm</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+  <span class="k">return</span> <span class="n">tm</span>
+</pre></div>
 </div>
 </div>
 <div class="section" id="creating-new-device">
 <h2>Creating new device<a class="headerlink" href="#creating-new-device" title="Permalink to this headline">¶</a></h2>
-<p>To create new device:</p>
-<div class="highlight-python"><pre>$ python your_app_name newcmd your_device_name</pre>
+<p>The steps of creation of a new device are the same as for a command.
+To create a new device with name <em>motor</em> simply type:</p>
+<div class="highlight-python"><pre>$ python your_app_name newdev motor</pre>
 </div>
+<p>The <em>newdev</em> management tool will create a new configuration in the <em>device.yml</em> file and new source file in the folder <em>devices</em>.
+Below is the code for the new device:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyfrid.core</span> <span class="kn">import</span> <span class="n">BaseDevice</span>
+
+<span class="k">class</span> <span class="nc">MotorDevice</span><span class="p">(</span><span class="n">BaseDevice</span><span class="p">):</span>
+
+    <span class="n">alias</span><span class="o">=</span><span class="s">&quot;motor&quot;</span>
+
+    <span class="n">descr</span><span class="o">=</span><span class="s">&quot;Type here a description...&quot;</span>
+
+    <span class="k">def</span> <span class="nf">position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">MotorDevice</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">MotorDevice</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The <em>position</em>  and <em>status</em> methods return a current position and a current status of the created device, respectively.
+By default these methods return <em>None</em> value. A status of device is a tuple with the next structure:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="p">(</span><span class="s">&quot;item1&quot;</span><span class="p">,</span> <span class="n">value1</span><span class="p">,</span> <span class="s">&quot;units1&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s">&quot;item2&quot;</span><span class="p">,</span> <span class="n">value2</span><span class="p">,</span> <span class="s">&quot;units2&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>where status items can be any hardware or software values related to your device. For example, a motor status can contain <em>Moving</em> parameter with True or False values.
+It also can be <em>End switch</em> - &#8220;On&#8221; or &#8220;Off&#8221;, if exists, <em>Hardware Error</em> flag and so on.</p>
+<p>By default our new <em>motor</em> device doesn&#8217;t have any functionality, i.e. it is unknown for commands presented in PyFRID. Normally motors are moveable devices and PyFRID has
+a special command <em>move</em> wich has alias of the same name. Move command accepts any device and its position as an argument. The validation method of this command will check
+whether this command is moveable and will return False with error if it is not.</p>
+<p>In order to make our motor moveable we add the following method to its class:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">do_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+    <span class="n">harware_move_function</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+    <span class="n">curpos</span><span class="o">=</span><span class="n">read_current_pos_from_harware</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">curpos</span>
+</pre></div>
+</div>
+<p>The name of this method consists of two parts <em>do_</em> and a command alias, <em>move</em> in our case. This method must return
+a current position of device read from hardware.</p>
 </div>
 <div class="section" id="creating-new-module">
 <h2>Creating new module<a class="headerlink" href="#creating-new-module" title="Permalink to this headline">¶</a></h2>
 <p>To create new module:</p>
-<div class="highlight-python"><pre>$ python your_app_name newcmd your_module_name</pre>
+<div class="highlight-python"><pre>$ python your_app_name newmod your_module_name</pre>
 </div>
 </div>
 </div>

@@ -13,7 +13,7 @@
 #   limitations under the License.
 
 
-
+import shutil
 import os
 from types import ListType,DictType,TupleType,IntType,BooleanType,FloatType, StringType
 
@@ -26,6 +26,22 @@ def splitall(path, prev=[]):
     if part1 == path:
         return prev
     return splitall(part1, [part2] + prev)
+
+def copytree(src, dst):
+    root_src_dir = os.path.abspath(src)
+    root_dst_dir = os.path.abspath(dst)
+    
+    for src_dir, dirs, files in os.walk(root_src_dir):
+        dst_dir = src_dir.replace(root_src_dir, root_dst_dir)
+        if not os.path.exists(dst_dir):
+            os.mkdir(dst_dir)
+        for file_ in files:
+            if not file_.endswith(".pyc") or file_.endswith(".pyd"):
+                src_file = os.path.join(src_dir, file_)
+                dst_file = os.path.join(dst_dir, file_)
+                if os.path.exists(dst_file):
+                    os.remove(dst_file)
+                shutil.copy(src_file, dst_dir)
 
 def format_value(value, string_qoutes=True):
     _type=type(value)

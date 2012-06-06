@@ -21,7 +21,7 @@ class BaseDummyMotorDevice(BaseDevice):
     
     lim1=FloatSetting(-100, fixed=False)
     lim2=FloatSetting( 100, fixed=False)
-    precision= FloatSetting(0.0001, fixed=True)
+    precision= FloatSetting(0.01, fixed=True)
     
     step=0.01
     time_step=0.01
@@ -41,9 +41,11 @@ class BaseDummyMotorDevice(BaseDevice):
         
     def do_move(self, newpos):
         self._mov=True
+        step=self.step
+        if self._pos>newpos: step=-self.step
         while abs(self._pos-newpos)>self.precision and not self.stopped:
             time.sleep(self.time_step)
-            self._pos+=self.step
+            self._pos+=step
         self._mov=False
         return self._pos
     
