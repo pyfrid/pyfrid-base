@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Settings &mdash; Pyfrid 0.1.1 documentation</title>
+    <title>Settings &mdash; Pyfrid 0.0.1 documentation</title>
     
     <link rel="stylesheet" href="_static/pyramid.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.1.1',
+        VERSION:     '0.0.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,9 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Pyfrid 0.1.1 documentation" href="index.html" />
+    <link rel="top" title="Pyfrid 0.0.1 documentation" href="index.html" />
+    <link rel="next" title="System modules" href="sysmod.html" />
+    <link rel="prev" title="Modules" href="module.html" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
 <!--[if lte IE 6]>
@@ -43,7 +45,13 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="index.html">Pyfrid 0.1.1 documentation</a> &raquo;</li> 
+        <li class="right" >
+          <a href="sysmod.html" title="System modules"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="module.html" title="Modules"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Pyfrid 0.0.1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -54,12 +62,174 @@
             
   <div class="section" id="module-pyfrid.core.settings">
 <span id="settings"></span><h1>Settings<a class="headerlink" href="#module-pyfrid.core.settings" title="Permalink to this headline">¶</a></h1>
-<dl class="attribute">
+<p>This is a module with a base class and mostly used setting classes. In general, a setting is an object attribute
+but with overridden attribute access methods, it is said to be a descriptor. In the code settings behave like normal
+variables; default value of setting as well as permissions and units can be 
+given in the configuration file of application. A user can have access to settings via two system commands: <em>get</em> and <em>set</em>.</p>
+<div class="section" id="base-setting-classes">
+<h2>Base setting classes<a class="headerlink" href="#base-setting-classes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
 <dt id="pyfrid.core.settings.BaseSetting">
-<tt class="descclassname">pyfrid.core.settings.</tt><tt class="descname">BaseSetting</tt><a class="reference internal" href="_modules/pyfrid/core/settings.html#BaseSetting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.core.settings.BaseSetting" title="Permalink to this definition">¶</a></dt>
-<dd><p>Main class for all settings</p>
+<em class="property">class </em><tt class="descclassname">pyfrid.core.settings.</tt><tt class="descname">BaseSetting</tt><big>(</big><em>value, getter=None, setter=None, units='', docs='', expected=[], limits=[None, None], fixed=False, allownone=False</em><big>)</big><a class="reference internal" href="_modules/pyfrid/core/settings.html#BaseSetting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.core.settings.BaseSetting" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class of a setting. Initialization function has the following arguments:</p>
+<ul class="simple">
+<li>value - default value of setting, it can be also a callable object;</li>
+<li>getter and setter - callable objects or functions to get and to set setting value;</li>
+<li>units - simple string with units name;</li>
+<li>expected - a list of expected values; these values must be of the same type as setting;</li>
+<li>limits - lower and upper (or None if not defined) limits for setting value;</li>
+<li>fixed - if this flag is True, this setting can not be accessed with <em>set</em> or <em>get</em> command;</li>
+<li>allownone - if True None value is also allowed independently of the setting type.</li>
+</ul>
+<dl class="method">
+<dt id="pyfrid.core.settings.BaseSetting.configure">
+<tt class="descname">configure</tt><big>(</big><em>instance</em>, <em>default_value=None</em>, <em>permissions=None</em><big>)</big><a class="reference internal" href="_modules/pyfrid/core/settings.html#BaseSetting.configure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.core.settings.BaseSetting.configure" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function creates a record in settings registry. This record is a dictionary with a default value of a setting,
+its permissions and actual value, which is None by default and will be set during setting initialization.
+<em>instance</em> - an object instance which has this setting as an attribute.</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="pyfrid.core.settings.BaseSetting.docs">
+<tt class="descname">docs</tt><a class="reference internal" href="_modules/pyfrid/core/settings.html#BaseSetting.docs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.core.settings.BaseSetting.docs" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns doc string for setting</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.core.settings.BaseSetting.expected">
+<tt class="descname">expected</tt><a class="reference internal" href="_modules/pyfrid/core/settings.html#BaseSetting.expected"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.core.settings.BaseSetting.expected" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.core.settings.BaseSetting.fixed">
+<tt class="descname">fixed</tt><a class="reference internal" href="_modules/pyfrid/core/settings.html#BaseSetting.fixed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.core.settings.BaseSetting.fixed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.settings.BaseSetting.get_permission_groups">
+<tt class="descname">get_permission_groups</tt><big>(</big><em>instance</em>, <em>perm</em><big>)</big><a class="reference internal" href="_modules/pyfrid/core/settings.html#BaseSetting.get_permission_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.core.settings.BaseSetting.get_permission_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns user groups for permissions <em>perm</em></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.settings.BaseSetting.initialize">
+<tt class="descname">initialize</tt><big>(</big><em>instance</em><big>)</big><a class="reference internal" href="_modules/pyfrid/core/settings.html#BaseSetting.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.core.settings.BaseSetting.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialization method for setting, checks if setting was configured already and sets its value to default value.
+<em>instance</em> - an object instance which has this setting as an attribute.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.core.settings.BaseSetting.setting_types">
+<tt class="descname">setting_types</tt><em class="property"> = None</em><a class="headerlink" href="#pyfrid.core.settings.BaseSetting.setting_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>a list of setting types, which setting value can have</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.core.settings.BaseSetting.typename">
+<tt class="descname">typename</tt><em class="property"> = ''</em><a class="headerlink" href="#pyfrid.core.settings.BaseSetting.typename" title="Permalink to this definition">¶</a></dt>
+<dd><p>name of the setting type, for instance &#8220;float&#8221;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.core.settings.BaseSetting.units">
+<tt class="descname">units</tt><a class="reference internal" href="_modules/pyfrid/core/settings.html#BaseSetting.units"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.core.settings.BaseSetting.units" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns units name</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.settings.BaseSetting.validate">
+<tt class="descname">validate</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="_modules/pyfrid/core/settings.html#BaseSetting.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.core.settings.BaseSetting.validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>executes type check and check of value limits</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.settings.BaseSetting.validate_expected">
+<tt class="descname">validate_expected</tt><big>(</big><em>expected</em><big>)</big><a class="reference internal" href="_modules/pyfrid/core/settings.html#BaseSetting.validate_expected"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.core.settings.BaseSetting.validate_expected" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function checks type of expected values and if their values are in setting limits</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.settings.BaseSetting.validate_limits">
+<tt class="descname">validate_limits</tt><big>(</big><em>limits</em><big>)</big><a class="reference internal" href="_modules/pyfrid/core/settings.html#BaseSetting.validate_limits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.core.settings.BaseSetting.validate_limits" title="Permalink to this definition">¶</a></dt>
+<dd><p>checks if limits are of the same type as setting value</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.settings.BaseSetting.validate_type">
+<tt class="descname">validate_type</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="_modules/pyfrid/core/settings.html#BaseSetting.validate_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.core.settings.BaseSetting.validate_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>checks if setting value has allowed type</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyfrid.core.settings.BaseSetting.validate_value">
+<tt class="descname">validate_value</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="_modules/pyfrid/core/settings.html#BaseSetting.validate_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.core.settings.BaseSetting.validate_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>checks if value is in limits and is in expected values list if defined</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyfrid.core.settings.BaseListSetting">
+<em class="property">class </em><tt class="descclassname">pyfrid.core.settings.</tt><tt class="descname">BaseListSetting</tt><big>(</big><em>value, getter=None, setter=None, units='', docs='', expected=[], limits=[None, None], fixed=False, allownone=False, numitems=None</em><big>)</big><a class="reference internal" href="_modules/pyfrid/core/settings.html#BaseListSetting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.core.settings.BaseListSetting" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base setting class which accepts list of values. 
+Compared to normal setting it has <em>numitems</em>, which defines a maximum number of items in the list.</p>
+<dl class="attribute">
+<dt id="pyfrid.core.settings.BaseListSetting.item_types">
+<tt class="descname">item_types</tt><em class="property"> = None</em><a class="headerlink" href="#pyfrid.core.settings.BaseListSetting.item_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>list with possible items types</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyfrid.core.settings.BaseListSetting.setting_types">
+<tt class="descname">setting_types</tt><a class="headerlink" href="#pyfrid.core.settings.BaseListSetting.setting_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="intsetting">
+<h2>IntSetting<a class="headerlink" href="#intsetting" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyfrid.core.settings.IntSetting">
+<em class="property">class </em><tt class="descclassname">pyfrid.core.settings.</tt><tt class="descname">IntSetting</tt><big>(</big><em>value, getter=None, setter=None, units='', docs='', expected=[], limits=[None, None], fixed=False, allownone=False</em><big>)</big><a class="reference internal" href="_modules/pyfrid/core/settings.html#IntSetting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.core.settings.IntSetting" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setting which accepts integer type of values.</p>
+<dl class="attribute">
+<dt id="pyfrid.core.settings.IntSetting.setting_types">
+<tt class="descname">setting_types</tt><a class="headerlink" href="#pyfrid.core.settings.IntSetting.setting_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">int</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="floatsetting">
+<h2>FloatSetting<a class="headerlink" href="#floatsetting" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyfrid.core.settings.FloatSetting">
+<em class="property">class </em><tt class="descclassname">pyfrid.core.settings.</tt><tt class="descname">FloatSetting</tt><big>(</big><em>value, getter=None, setter=None, units='', docs='', expected=[], limits=[None, None], fixed=False, allownone=False</em><big>)</big><a class="reference internal" href="_modules/pyfrid/core/settings.html#FloatSetting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.core.settings.FloatSetting" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setting which accepts integer and float type of values.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="stringsetting">
+<h2>StringSetting<a class="headerlink" href="#stringsetting" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyfrid.core.settings.StringSetting">
+<em class="property">class </em><tt class="descclassname">pyfrid.core.settings.</tt><tt class="descname">StringSetting</tt><big>(</big><em>value, getter=None, setter=None, units='', docs='', expected=[], limits=[None, None], fixed=False, allownone=False</em><big>)</big><a class="reference internal" href="_modules/pyfrid/core/settings.html#StringSetting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.core.settings.StringSetting" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setting which accepts strings.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="boolsetting">
+<h2>BoolSetting<a class="headerlink" href="#boolsetting" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyfrid.core.settings.BoolSetting">
+<em class="property">class </em><tt class="descclassname">pyfrid.core.settings.</tt><tt class="descname">BoolSetting</tt><big>(</big><em>value, getter=None, setter=None, units='', docs='', expected=[], limits=[None, None], fixed=False, allownone=False</em><big>)</big><a class="reference internal" href="_modules/pyfrid/core/settings.html#BoolSetting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyfrid.core.settings.BoolSetting" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setting which accepts boolean and integer type of values.</p>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -68,6 +238,24 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Settings</a><ul>
+<li><a class="reference internal" href="#base-setting-classes">Base setting classes</a></li>
+<li><a class="reference internal" href="#intsetting">IntSetting</a></li>
+<li><a class="reference internal" href="#floatsetting">FloatSetting</a></li>
+<li><a class="reference internal" href="#stringsetting">StringSetting</a></li>
+<li><a class="reference internal" href="#boolsetting">BoolSetting</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="module.html"
+                        title="previous chapter">Modules</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="sysmod.html"
+                        title="next chapter">System modules</a></p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
@@ -94,7 +282,13 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="index.html">Pyfrid 0.1.1 documentation</a> &raquo;</li> 
+        <li class="right" >
+          <a href="sysmod.html" title="System modules"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="module.html" title="Modules"
+             >previous</a> |</li>
+        <li><a href="index.html">Pyfrid 0.0.1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

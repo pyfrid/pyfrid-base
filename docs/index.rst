@@ -16,6 +16,7 @@ Contents:
    command
    device
    module
+   settings
    sysmod
 
 

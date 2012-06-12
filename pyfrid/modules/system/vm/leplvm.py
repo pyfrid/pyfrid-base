@@ -34,10 +34,10 @@ class BaseNode(List):
 class ValueNode(BaseNode):
     """Base node for the constants
        While processing returns the value transformed to the given type.
-       Type can be any function of the form
+       Type can be any function of the form::
        def type_(string):
-            do_something
-            and return
+           #do_something
+           return converted_value
     """
     
     type_=str

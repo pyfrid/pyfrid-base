@@ -35,10 +35,6 @@ LOGFILEFORMAT="""
 ---
 Time: %(asctime)s
 Level: %(levelname)s
-Path: %(pathname)s
-Module: %(module)s
-Function: %(funcName)s
-Line: %(lineno)d
 Object: %(object)s 
 User: %(user)s
 Message: %(message)s

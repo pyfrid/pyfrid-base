@@ -155,8 +155,10 @@ class BaseCommand(BaseProjectObject):
         
 class BaseThreadedCommand(BaseCommand):
     """
-    Base  command class for a command with multiple parameters, like:
-    command object1 parameter1 object2 parameter2 ...
+    Base  command class for a command with multiple parameters, like::
+    
+        command object1 parameter1 object2 parameter2 ...
+        
     By default its grammar rule accepts OBJECT and VALUE repeated from one to infinite number of times and can be overwritten if necessary.
     A threaded command expects that every object to which it is applied, has special function-agent *do_{command_alias}* which does the actual job.
     If the *numthreads* parameter of the class is >1 the execution of the command for every OBJECT will be performed

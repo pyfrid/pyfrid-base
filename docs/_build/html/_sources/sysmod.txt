@@ -7,7 +7,7 @@ The parent of system module is an application related management command, like *
 These management commands are responsible for chosing a proper configuration manager, creation of devices, modules and commands of your application
 and other low level tasks. Having a reference to the application management command, a system module has access to configuration, other system modules,
 managers of devices, commands and modules of your application. All system modules: Logger, Application, Virtual Machine and Authentication, presented
-currently in PyFRID are described in the following subsections.   
+currently in PyFRID are described in the following subsections.
 
 Base System Module
 ------------------
@@ -19,7 +19,6 @@ System Module class and functions
    :members:
    :inherited-members:
 
-   
 Application Module
 ------------------
 

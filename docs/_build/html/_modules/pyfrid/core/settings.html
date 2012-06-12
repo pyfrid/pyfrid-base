@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyfrid.core.settings &mdash; Pyfrid 0.1.1 documentation</title>
+    <title>pyfrid.core.settings &mdash; Pyfrid 0.0.1 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/pyramid.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.1.1',
+        VERSION:     '0.0.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="Pyfrid 0.1.1 documentation" href="../../../index.html" />
+    <link rel="top" title="Pyfrid 0.0.1 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">Pyfrid 0.1.1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Pyfrid 0.0.1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -55,35 +55,51 @@
           <div class="body">
             
   <h1>Source code for pyfrid.core.settings</h1><div class="highlight"><pre>
-<span class="c">#    This file is part of PyFRID.</span>
+<span class="c">#  Copyright 2012 Denis Korolkov</span>
 <span class="c">#</span>
-<span class="c">#    PyFRID is free software: you can redistribute it and/or modify</span>
-<span class="c">#    it under the terms of the GNU General Public License as published by</span>
-<span class="c">#    the Free Software Foundation, either version 3 of the License, or</span>
-<span class="c">#    (at your option) any later version.</span>
+<span class="c">#   Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c">#   you may not use this file except in compliance with the License.</span>
+<span class="c">#   You may obtain a copy of the License at</span>
 <span class="c">#</span>
-<span class="c">#    PyFRID is distributed in the hope that it will be useful,</span>
-<span class="c">#    but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
-<span class="c">#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
-<span class="c">#    GNU General Public License for more details.</span>
+<span class="c">#       http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c">#</span>
-<span class="c">#    You should have received a copy of the GNU General Public License</span>
-<span class="c">#    along with PyFRID.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
-<span class="c">#</span>
+<span class="c">#   Unless required by applicable law or agreed to in writing, software</span>
+<span class="c">#   distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c">#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c">#   See the License for the specific language governing permissions and</span>
+<span class="c">#   limitations under the License.</span>
+
+<span class="sd">&quot;&quot;&quot;This is a module with a base class and mostly used setting classes. In general, a setting is an object attribute</span>
+<span class="sd"> but with overridden attribute access methods, it is said to be a descriptor. In the code settings behave like normal</span>
+<span class="sd"> variables and a programmer can easily get or change its value. The default value of setting as well as permissions and units can be </span>
+<span class="sd"> given in the configuration file of application. A user can have access to settings via two system commands: *get* and *set*. </span>
+<span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">IntType</span><span class="p">,</span> <span class="n">FloatType</span><span class="p">,</span> <span class="n">BooleanType</span><span class="p">,</span> <span class="n">StringType</span><span class="p">,</span> <span class="n">UnicodeType</span><span class="p">,</span> <span class="n">ListType</span><span class="p">,</span> <span class="n">NoneType</span>
 <span class="kn">from</span> <span class="nn">pyfrid.core.descriptor</span> <span class="kn">import</span> <span class="n">BaseDescriptor</span>
 
-<span class="k">class</span> <span class="nc">SettingError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span> <span class="k">pass</span>
-
+<div class="viewcode-block" id="SettingError"><a class="viewcode-back" href="../../../settings.html#pyfrid.core.settings.SettingError">[docs]</a><span class="k">class</span> <span class="nc">SettingError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span> <span class="k">pass</span>
+</div>
 <div class="viewcode-block" id="BaseSetting"><a class="viewcode-back" href="../../../settings.html#pyfrid.core.settings.BaseSetting">[docs]</a><span class="k">class</span> <span class="nc">BaseSetting</span><span class="p">(</span><span class="n">BaseDescriptor</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Main class for all settings</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Base class of a setting.&quot;&quot;&quot;</span>
+    
+    <span class="c">#: a list of setting types, which this setting can have</span>
+    <span class="c">#: these types are a part of standard *types* module </span>
     <span class="n">setting_types</span><span class="o">=</span><span class="bp">None</span>
+    
+    <span class="c">#: name of the setting type, for instance &quot;float&quot;</span>
     <span class="n">typename</span><span class="o">=</span><span class="s">&quot;&quot;</span>
     
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">getter</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">setter</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">docs</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">expected</span><span class="o">=</span><span class="p">[],</span> <span class="n">limits</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">],</span> <span class="n">fixed</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">allownone</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseSetting.__init__"><a class="viewcode-back" href="../../../settings.html#pyfrid.core.settings.BaseSetting.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">getter</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">setter</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">docs</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">expected</span><span class="o">=</span><span class="p">[],</span> <span class="n">limits</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">],</span> <span class="n">fixed</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">allownone</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialization function for base setting with the following arguments:</span>
+<span class="sd">                * value - default value of setting, it can be also a callable object;</span>
+<span class="sd">                * getter and setter - callable objects or functions to get and to set setting value;</span>
+<span class="sd">                * units - simple string with units name;</span>
+<span class="sd">                * expected - a list of expected values; these values must be of the same type as setting;</span>
+<span class="sd">                * limits - lower and upper (or None if not defined) limits for setting value;</span>
+<span class="sd">                * fixed - if this flag is True, this setting can not be accessed with *set* or *get* command;</span>
+<span class="sd">                * allownone - if True None value is also allowed independently of the setting type.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">BaseSetting</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">setting_types</span><span class="o">!=</span><span class="bp">None</span><span class="p">,</span> <span class="s">&quot;setting_type is None&quot;</span>
         <span class="k">assert</span> <span class="n">getter</span><span class="o">==</span><span class="bp">None</span> <span class="ow">or</span> <span class="nb">callable</span><span class="p">(</span><span class="n">getter</span><span class="p">),</span> <span class="s">&quot;getter must be callable or None&quot;</span>
@@ -112,8 +128,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_fixed</span><span class="o">=</span><span class="nb">bool</span><span class="p">(</span><span class="n">fixed</span><span class="p">)</span> 
         <span class="bp">self</span><span class="o">.</span><span class="n">_expected</span><span class="o">=</span><span class="n">expected</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="o">=</span><span class="nb">dict</span><span class="p">()</span>
-        
-    <span class="k">def</span> <span class="nf">validate_expected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expected</span><span class="p">):</span>
+        </div>
+<div class="viewcode-block" id="BaseSetting.validate_expected"><a class="viewcode-back" href="../../../settings.html#pyfrid.core.settings.BaseSetting.validate_expected">[docs]</a>    <span class="k">def</span> <span class="nf">validate_expected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expected</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function checks type of expected values and if their values are in setting limits&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">expected</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">setting_types</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;expected list type mismatch for value &#39;{0}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">))</span> 
@@ -121,32 +138,40 @@
                 <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;value &#39;{0}&#39; is out of limits [{1}, {2}]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">))</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">!=</span><span class="bp">None</span> <span class="ow">and</span> <span class="n">item</span><span class="o">&gt;</span><span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
                 <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;value &#39;{0}&#39; is out of limits [{1}, {2}]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">))</span>  
-                 
-    <span class="k">def</span> <span class="nf">validate_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limits</span><span class="p">):</span>
+                 </div>
+<div class="viewcode-block" id="BaseSetting.validate_limits"><a class="viewcode-back" href="../../../settings.html#pyfrid.core.settings.BaseSetting.validate_limits">[docs]</a>    <span class="k">def</span> <span class="nf">validate_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limits</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;checks if limits are of the same type as setting value&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">!=</span><span class="n">NoneType</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">setting_types</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;lower limit type mismatch for value &#39;{0}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">!=</span><span class="n">NoneType</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">setting_types</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;upper limit type mismatch for value &#39;{0}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
         <span class="k">if</span> <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">!=</span><span class="bp">None</span> <span class="ow">and</span> <span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">!=</span><span class="bp">None</span> <span class="ow">and</span> <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">&gt;</span><span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;lower limit is larger then upper limit&quot;</span><span class="p">)</span>
-                          
+                          </div>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">units</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseSetting.units"><a class="viewcode-back" href="../../../settings.html#pyfrid.core.settings.BaseSetting.units">[docs]</a>    <span class="k">def</span> <span class="nf">units</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;returns units name&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_units</span>
-    
+    </div>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">docs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseSetting.docs"><a class="viewcode-back" href="../../../settings.html#pyfrid.core.settings.BaseSetting.docs">[docs]</a>    <span class="k">def</span> <span class="nf">docs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;returns doc string for setting&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_docs</span>
-    
+    </div>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">fixed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseSetting.fixed"><a class="viewcode-back" href="../../../settings.html#pyfrid.core.settings.BaseSetting.fixed">[docs]</a>    <span class="k">def</span> <span class="nf">fixed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fixed</span>
-    
+    </div>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">expected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseSetting.expected"><a class="viewcode-back" href="../../../settings.html#pyfrid.core.settings.BaseSetting.expected">[docs]</a>    <span class="k">def</span> <span class="nf">expected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expected</span><span class="p">[:]</span>
-    
-    <span class="k">def</span> <span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">permissions</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    </div>
+<div class="viewcode-block" id="BaseSetting.configure"><a class="viewcode-back" href="../../../settings.html#pyfrid.core.settings.BaseSetting.configure">[docs]</a>    <span class="k">def</span> <span class="nf">configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">permissions</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function creates a record in settings registry. This record is a dictionary with a default value of a setting,</span>
+<span class="sd">        its permissions and actual value, which is None by default and will be set during setting initialization.</span>
+<span class="sd">        *instance* - an object instance which has this setting as an attribute.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">instance</span><span class="o">.</span><span class="n">alias</span><span class="p">:</span> 
             <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;Instance with empty alias&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">permissions</span>   <span class="o">==</span><span class="bp">None</span><span class="p">:</span> <span class="n">permissions</span><span class="o">=</span><span class="p">{}</span>
@@ -161,8 +186,11 @@
                                         <span class="s">&quot;permissions&quot;</span><span class="p">:</span><span class="n">permissions</span><span class="p">,</span>
                                         <span class="s">&quot;value&quot;</span><span class="p">:</span><span class="bp">None</span>
                                         <span class="p">}</span>
-        
-    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">):</span>
+        </div>
+<div class="viewcode-block" id="BaseSetting.initialize"><a class="viewcode-back" href="../../../settings.html#pyfrid.core.settings.BaseSetting.initialize">[docs]</a>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialization method for setting, checks if setting was configured already and sets its value to default value.</span>
+<span class="sd">        *instance* - an object instance which has this setting as an attribute.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_initmode</span><span class="o">=</span><span class="bp">True</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">instance</span><span class="o">.</span><span class="n">alias</span><span class="p">:</span> 
@@ -172,12 +200,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">__set__</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">[</span><span class="n">instance</span><span class="o">.</span><span class="n">alias</span><span class="p">][</span><span class="s">&quot;default_value&quot;</span><span class="p">])</span>
         <span class="k">finally</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_initmode</span><span class="o">=</span><span class="bp">False</span>
-                
-    <span class="k">def</span> <span class="nf">get_permission_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">instance</span><span class="p">,</span><span class="n">perm</span><span class="p">):</span>
+                </div>
+<div class="viewcode-block" id="BaseSetting.get_permission_groups"><a class="viewcode-back" href="../../../settings.html#pyfrid.core.settings.BaseSetting.get_permission_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_permission_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">instance</span><span class="p">,</span><span class="n">perm</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns user groups for permissions *perm* &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">instance</span><span class="o">.</span><span class="n">alias</span><span class="p">:</span> 
             <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;Instance with empty alias&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">[</span><span class="n">instance</span><span class="o">.</span><span class="n">alias</span><span class="p">][</span><span class="s">&quot;permissions&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">perm</span><span class="p">,[])</span>
-        
+        </div>
     <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">instance</span><span class="o">==</span><span class="bp">None</span><span class="p">:</span> <span class="k">return</span> <span class="bp">self</span>
         <span class="k">assert</span> <span class="n">instance</span><span class="o">.</span><span class="n">alias</span><span class="p">,</span> <span class="s">&quot;Instance with empty alias&quot;</span>
@@ -203,51 +232,63 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">[</span><span class="n">instance</span><span class="o">.</span><span class="n">alias</span><span class="p">][</span><span class="s">&quot;value&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">value</span>
                                                     
-    <span class="k">def</span> <span class="nf">validate_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseSetting.validate_value"><a class="viewcode-back" href="../../../settings.html#pyfrid.core.settings.BaseSetting.validate_value">[docs]</a>    <span class="k">def</span> <span class="nf">validate_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;checks if value is in limits and is in expected values list if defined&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">!=</span><span class="bp">None</span> <span class="ow">and</span> <span class="n">value</span><span class="o">&lt;</span><span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;value &#39;{0}&#39; is out of limits [{1}, {2}]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">!=</span><span class="bp">None</span> <span class="ow">and</span> <span class="n">value</span><span class="o">&gt;</span><span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;value &#39;{0}&#39; is out of limits [{1}, {2}]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">))</span>    
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expected</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expected</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;value &#39;{0}&#39; is  not in expected values&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
-        
-    <span class="k">def</span> <span class="nf">validate_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        </div>
+<div class="viewcode-block" id="BaseSetting.validate_type"><a class="viewcode-back" href="../../../settings.html#pyfrid.core.settings.BaseSetting.validate_type">[docs]</a>    <span class="k">def</span> <span class="nf">validate_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;checks if setting value has allowed type&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">setting_types</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;type mismatch for value &#39;{0}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
-        
-    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        </div>
+<div class="viewcode-block" id="BaseSetting.validate"><a class="viewcode-back" href="../../../settings.html#pyfrid.core.settings.BaseSetting.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;executes type check and check of value limits &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">validate_type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">validate_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>  
-                      </div>
-<span class="k">class</span> <span class="nc">IntSetting</span><span class="p">(</span><span class="n">BaseSetting</span><span class="p">):</span>       
+                      </div></div>
+<div class="viewcode-block" id="IntSetting"><a class="viewcode-back" href="../../../settings.html#pyfrid.core.settings.IntSetting">[docs]</a><span class="k">class</span> <span class="nc">IntSetting</span><span class="p">(</span><span class="n">BaseSetting</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Setting which accepts integer type of values.&quot;&quot;&quot;</span>       
     <span class="n">setting_types</span><span class="o">=</span><span class="n">IntType</span>
     <span class="n">typename</span><span class="o">=</span><span class="s">&quot;int&quot;</span>
-            
-<span class="k">class</span> <span class="nc">FloatSetting</span><span class="p">(</span><span class="n">BaseSetting</span><span class="p">):</span>        
+            </div>
+<div class="viewcode-block" id="FloatSetting"><a class="viewcode-back" href="../../../settings.html#pyfrid.core.settings.FloatSetting">[docs]</a><span class="k">class</span> <span class="nc">FloatSetting</span><span class="p">(</span><span class="n">BaseSetting</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Setting which accepts integer and float type of values.&quot;&quot;&quot;</span>        
     <span class="n">setting_types</span><span class="o">=</span><span class="p">[</span><span class="n">FloatType</span><span class="p">,</span> <span class="n">IntType</span><span class="p">]</span>
     <span class="n">typename</span><span class="o">=</span><span class="s">&quot;float&quot;</span>
-
-<span class="k">class</span> <span class="nc">StringSetting</span><span class="p">(</span><span class="n">BaseSetting</span><span class="p">):</span>        
+</div>
+<div class="viewcode-block" id="StringSetting"><a class="viewcode-back" href="../../../settings.html#pyfrid.core.settings.StringSetting">[docs]</a><span class="k">class</span> <span class="nc">StringSetting</span><span class="p">(</span><span class="n">BaseSetting</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Setting which accepts strings.&quot;&quot;&quot;</span>        
     <span class="n">setting_types</span><span class="o">=</span><span class="p">[</span><span class="n">StringType</span><span class="p">,</span> <span class="n">UnicodeType</span><span class="p">]</span>
     <span class="n">typename</span><span class="o">=</span><span class="s">&quot;string&quot;</span>
-
-<span class="k">class</span> <span class="nc">BoolSetting</span><span class="p">(</span><span class="n">BaseSetting</span><span class="p">):</span>        
+</div>
+<div class="viewcode-block" id="BoolSetting"><a class="viewcode-back" href="../../../settings.html#pyfrid.core.settings.BoolSetting">[docs]</a><span class="k">class</span> <span class="nc">BoolSetting</span><span class="p">(</span><span class="n">BaseSetting</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Setting which accepts boolean and integer type of values.&quot;&quot;&quot;</span>        
     <span class="n">setting_types</span><span class="o">=</span><span class="p">[</span><span class="n">BooleanType</span><span class="p">,</span> <span class="n">IntType</span><span class="p">]</span>
     <span class="n">typename</span><span class="o">=</span><span class="s">&quot;boolean&quot;</span>
-    
-<span class="k">class</span> <span class="nc">BaseListSetting</span><span class="p">(</span><span class="n">BaseSetting</span><span class="p">):</span>
+    </div>
+<div class="viewcode-block" id="BaseListSetting"><a class="viewcode-back" href="../../../settings.html#pyfrid.core.settings.BaseListSetting">[docs]</a><span class="k">class</span> <span class="nc">BaseListSetting</span><span class="p">(</span><span class="n">BaseSetting</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base setting class which accepts list of values. </span>
+<span class="sd">    Compared to normal setting it has *numitems*, which defines a maximum number of items in the list.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">setting_types</span><span class="o">=</span><span class="n">ListType</span>
+    
+    <span class="c">#: list with possible items types</span>
     <span class="n">item_types</span><span class="o">=</span><span class="bp">None</span>
     
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">getter</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">setter</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">docs</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">expected</span><span class="o">=</span><span class="p">[],</span> <span class="n">limits</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">],</span> <span class="n">fixed</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">allownone</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">maxitems</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">getter</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">setter</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">docs</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">expected</span><span class="o">=</span><span class="p">[],</span> <span class="n">limits</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">],</span> <span class="n">fixed</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">allownone</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">numitems</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">BaseListSetting</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">getter</span><span class="p">,</span> <span class="n">setter</span><span class="p">,</span> <span class="n">units</span><span class="p">,</span> <span class="n">docs</span><span class="p">,</span> <span class="n">expected</span><span class="p">,</span> <span class="n">limits</span><span class="p">,</span> <span class="n">fixed</span><span class="p">,</span> <span class="n">allownone</span><span class="p">)</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_types</span><span class="o">!=</span><span class="bp">None</span><span class="p">,</span> <span class="s">&quot;item type is None&quot;</span>
-        <span class="k">assert</span> <span class="n">maxitems</span><span class="o">==</span><span class="bp">None</span> <span class="ow">or</span> <span class="n">maxitems</span><span class="o">!=</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">maxitems</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">,</span> <span class="s">&quot;maxitems &lt;= zero&quot;</span>
+        <span class="k">assert</span> <span class="n">numitems</span><span class="o">==</span><span class="bp">None</span> <span class="ow">or</span> <span class="n">numitems</span><span class="o">!=</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">numitems</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">,</span> <span class="s">&quot;numitems &lt;= zero&quot;</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">item_types</span><span class="p">)</span><span class="o">!=</span><span class="n">ListType</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">item_types</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">item_types</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">allownone</span> <span class="ow">and</span> <span class="n">NoneType</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">item_types</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">item_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">NoneType</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_maxitems</span><span class="o">=</span><span class="n">maxitems</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_numitems</span><span class="o">=</span><span class="n">numitems</span>
     
     <span class="k">def</span> <span class="nf">validate_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">BaseListSetting</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">validate_type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
@@ -256,8 +297,8 @@
                 <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;type mismatch for value &#39;{0}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
             
     <span class="k">def</span> <span class="nf">validate_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_maxitems</span><span class="o">!=</span><span class="bp">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_maxitems</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;length of the value is larger them maxitems&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_numitems</span><span class="o">!=</span><span class="bp">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_numitems</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;array length doesn&#39;t match possible number of items&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
             <span class="nb">super</span><span class="p">(</span><span class="n">BaseListSetting</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">validate_value</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
     
@@ -277,19 +318,23 @@
             <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;upper limit type mismatch for value &#39;{0}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
         <span class="k">if</span> <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">!=</span><span class="bp">None</span> <span class="ow">and</span> <span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">!=</span><span class="bp">None</span> <span class="ow">and</span> <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">&gt;</span><span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="n">SettingError</span><span class="p">(</span><span class="s">&quot;lower limit is larger then upper limit&quot;</span><span class="p">)</span>
-
-<span class="k">class</span> <span class="nc">BoolListSetting</span><span class="p">(</span><span class="n">BaseListSetting</span><span class="p">):</span>        
+</div>
+<div class="viewcode-block" id="BoolListSetting"><a class="viewcode-back" href="../../../settings.html#pyfrid.core.settings.BoolListSetting">[docs]</a><span class="k">class</span> <span class="nc">BoolListSetting</span><span class="p">(</span><span class="n">BaseListSetting</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>        
     <span class="n">item_types</span><span class="o">=</span><span class="n">BooleanType</span>
-   
-<span class="k">class</span> <span class="nc">IntListSetting</span><span class="p">(</span><span class="n">BaseListSetting</span><span class="p">):</span>        
+   </div>
+<div class="viewcode-block" id="IntListSetting"><a class="viewcode-back" href="../../../settings.html#pyfrid.core.settings.IntListSetting">[docs]</a><span class="k">class</span> <span class="nc">IntListSetting</span><span class="p">(</span><span class="n">BaseListSetting</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>        
     <span class="n">item_types</span><span class="o">=</span><span class="n">IntType</span>
-         
-<span class="k">class</span> <span class="nc">FloatListSetting</span><span class="p">(</span><span class="n">BaseListSetting</span><span class="p">):</span>        
+         </div>
+<div class="viewcode-block" id="FloatListSetting"><a class="viewcode-back" href="../../../settings.html#pyfrid.core.settings.FloatListSetting">[docs]</a><span class="k">class</span> <span class="nc">FloatListSetting</span><span class="p">(</span><span class="n">BaseListSetting</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>        
     <span class="n">item_types</span><span class="o">=</span><span class="p">[</span><span class="n">FloatType</span><span class="p">,</span> <span class="n">IntType</span><span class="p">]</span>
-
-<span class="k">class</span> <span class="nc">StringListSetting</span><span class="p">(</span><span class="n">BaseListSetting</span><span class="p">):</span>        
+</div>
+<div class="viewcode-block" id="StringListSetting"><a class="viewcode-back" href="../../../settings.html#pyfrid.core.settings.StringListSetting">[docs]</a><span class="k">class</span> <span class="nc">StringListSetting</span><span class="p">(</span><span class="n">BaseListSetting</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>        
     <span class="n">item_types</span><span class="o">=</span><span class="n">StringType</span>
-            
+            </div>
 </pre></div>
 
           </div>
@@ -323,7 +368,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">Pyfrid 0.1.1 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">Pyfrid 0.0.1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

@@ -33,6 +33,8 @@ class ModuleMetaClass(ObjectMetaClass):
             raise RegistryError("Exception while registering class '{0}': {1}".format(cls.__class__.__name__,err))
         
 class BaseModule(BaseProjectObject):
+    """This is a base module class. Modules are used to make different kind of tasks and their functionality is not limited."""
+    
     __metaclass__=ModuleMetaClass
 
     def __init__(self, app, *args, **kwargs):

@@ -26,9 +26,11 @@ class BaseDummyShutterDevice(BaseDevice):
         return self._pos
     
     def status(self):
-        return None 
+        return None
         
     def do_switch(self, newpos):
         time.sleep(1)
         self._pos=bool(newpos)
         return self._pos
+    
+    

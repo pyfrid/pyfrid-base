@@ -85,23 +85,28 @@ class ObjectMetaClass(abc.ABCMeta):
     
 class BaseObject(object):
     """
-    Base class for commands, modules and devices. Every object in PyFRID has alias and name.
-    Alias is an internal unique name of an object used by PyFRID for identification and internal linking between objects.
-    Name of an object is a string setting, it can be changed by a user in the configuration file. 
+    An abstract base class for commands, modules and devices. This class is not used directly. 
+    Alias is an internal unique identificator of an object used by PyFRID for identification and internal linking between objects.
+    Name of an object is a string setting, it can be changed in the configuration file. 
     """
     __metaclass__=ObjectMetaClass
     _settings={}
     
+    #: unique identificator for object
     alias=""
+    
+    #: string setting with name of object
     name  = StringSetting("", fixed = True)
+    
+    #: a group which object belongs to
     group = StringSetting("", fixed = True)
         
     def __init__(self, appobj, config_permissions={}, config_settings={}):
         """
         Input parameters are: 
-        appobj - reference to a parent of the object, config_permissions - dictionary with a user permissions,
-        config_settings - dictionary with settings, their permissions and default values. 
-        config_permissions and config_settings are defined in the configuration file  
+        *appobj - reference to a parent of the object, config_permissions - dictionary with a user permissions,
+        *config_settings - dictionary with settings, their permissions and default values. 
+        *config_permissions and config_settings are defined in the configuration file  
         """
         #simple type check
         assert type(config_permissions)==DictType, "expect dictionary type for the config_permisiions parameter"
@@ -294,8 +299,7 @@ class BaseObject(object):
         self.shutdown()
     
     def lock(self):
-        """Locks this object.
-           While the object is locked and function acquires a new locking, the object will be blocked.
+        """This function locks the object. While object is locked and function acquires a new locking, the object will be blocked.
            This is useful for devices. For example during moving the device no further moving operation can be done.
         """
         try:
