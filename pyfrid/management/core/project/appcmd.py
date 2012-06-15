@@ -113,11 +113,23 @@ class BaseApplicationCommand(BaseProjectCommand):
         pass    
             
     def handle(self, *args, **options):
-        self.import_path(self.projpath)
-        config_subfolder=options.get("config_subfolder","")
-        config_type=options.get("config_type","yaml")
-        self.initialize(config_type, config_subfolder)
-        if self.preloop(*args, **options):
-            self.mainloop(*args, **options)
-            self.postloop(*args, **options)
+        # Issue #1 fixed by Denis Korolkov
+        # solution: adding root directory location to sys.path for importing modules
+        # from the application itself
+        pf_, _ = os.path.split(self.projpath)
+        if not pf_: 
+            raise CommandError("ERROR: empty parent directory, something is seriously wrong")
+        sys.path.insert(0, pf_)
+        try:  
+            self.import_path(self.projpath)
+            config_subfolder=options.get("config_subfolder","")
+            config_type=options.get("config_type","yaml")
+            self.initialize(config_type, config_subfolder)
+            if self.preloop(*args, **options):
+                self.mainloop(*args, **options)
+                self.postloop(*args, **options)
+        finally:
+            # slower but better because there can be other insertions during runtime
+            sys.path.remove(pf_)  
+            
             
