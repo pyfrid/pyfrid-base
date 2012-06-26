@@ -149,7 +149,7 @@ class BaseSetting(BaseDescriptor):
             raise SettingError("Instance with empty alias")
         return self._registry[instance.alias]["permissions"].get(perm,[])
         
-    def __get__(self, instance, owner):
+    def __get__(self, instance, owner=None):
         if instance==None: return self
         assert instance.alias, "Instance with empty alias"
         if self._getter!=None:
