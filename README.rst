@@ -1,4 +1,7 @@
-PyFRID is a tool for creating flexible applications for an instrument from simple
+PyFRID - Python Framework for Instrument Development
+----------------------------------------------------
+
+**PyFRID** is a tool for creating flexible applications for an instrument from simple
 laboratory setups to more complex instruments like neutron or X-ray diffractometers.
 If you have a bunch of motors, sensors, detectors, etc. and would like to manipulate
 them, to program their behavior, to test them and represent information in a convenient way,
