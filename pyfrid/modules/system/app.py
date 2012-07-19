@@ -13,6 +13,7 @@
 #   limitations under the License.
 
 import traceback
+from pyfrid.core.manager import ObjectManagerError
 from pyfrid.core.settings import StringSetting
 from pyfrid.utils.threadpool import ThreadPool
 from pyfrid.core.sysmod import BaseSystemModule
@@ -54,16 +55,31 @@ class BaseApplicationModule(BaseSystemModule):
         self._stoppool=ThreadPool(self, num_threads=1, persist=True, queue_size=1)
         
         for alias, permissions, settings in self.app.config_manager.iterate_devices():
-            obj=self.app.device_manager.create_object(device_registry[alias], self, permissions, settings)
-            connect_to_logger(self.logger_module, obj)
+            try:
+                obj=self.app.device_manager.create_object(device_registry[alias], self, permissions, settings)
+                connect_to_logger(self.logger_module, obj)
+            except ObjectManagerError, err:
+                self.error("Device {0} was not created due to the error and will be ignored: \n{1} ".format(alias, str(err)))
+            except Exception, err:
+                self.exception(err)
         
         for alias, permissions, settings in self.app.config_manager.iterate_modules():
-            obj=self.app.module_manager.create_object(module_registry[alias], self, permissions, settings)
-            connect_to_logger(self.logger_module, obj)
+            try:
+                obj=self.app.module_manager.create_object(module_registry[alias], self, permissions, settings)
+                connect_to_logger(self.logger_module, obj)
+            except ObjectManagerError, err:
+                self.error("Module {0} was not created due to the error and will be ignored: \n{1} ".format(alias,str(err)))
+            except Exception, err:
+                self.exception(err)
         
         for alias, permissions, settings in self.app.config_manager.iterate_commands():
-            obj=self.app.command_manager.create_object(command_registry[alias], self, permissions, settings)
-            connect_to_logger(self.logger_module, obj)
+            try:
+                obj=self.app.command_manager.create_object(command_registry[alias], self, permissions, settings)
+                connect_to_logger(self.logger_module, obj)
+            except ObjectManagerError, err:
+                self.error("Command {0} was not created due to the error and will be ignored: \n{1} ".format(alias,str(err)))
+            except Exception, err:
+                self.exception(err)
                 
     def initialize(self):
         """Initialization handler. It iterates over all devices, modules and commands and calls *initialize* handler of each object.""" 

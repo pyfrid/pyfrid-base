@@ -25,10 +25,7 @@ class ObjectManager(object):
         self._names=odict()
             
     def create_object(self, cls, app, config_permissions={}, config_settings={}):
-        try:
-            obj=cls(app, config_permissions=config_permissions, config_settings=config_settings)
-        except Exception:
-            raise ObjectManagerError("Exception while creating object with alias '{0}':\n {1}".format(cls.alias,traceback.format_exc()))
+        obj=cls(app, config_permissions=config_permissions, config_settings=config_settings) 
         if not obj.name: 
             raise ObjectManagerError("Object with alias '{0}': empty name".format(cls.alias))
         if obj.name in self._names:
