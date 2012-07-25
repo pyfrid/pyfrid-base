@@ -390,7 +390,7 @@ class BaseProjectObject(BaseObject):
                 def perm_getter(permission):
                     return sobj.get_permission_groups(self, permission)
                 if not self.app.validate_access(perm_getter, permission=permission):
-                    self.error("Access denied to setting '{0}'".format(name))
+                    #self.error("Access denied to setting '{0}'".format(name))
                     return False
             return True
         return False
